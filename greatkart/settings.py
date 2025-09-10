@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'accounts',
     'store',
     'carts',
+    'virtual_tryon',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -134,3 +135,8 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Google Generative AI API Key
+# Replace the empty string below with your actual Gemini API key
+# You can get one from: https://aistudio.google.com/app/apikey
+GEMINI_API_KEY = 'place_holder'  # Paste your actual API key here
