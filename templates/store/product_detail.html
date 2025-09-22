@@ -1,180 +1,574 @@
 {% extends 'base.html' %}
-
 {% load static %}
 
 {% block content %}
 
-<section class="section-content padding-y bg">
+<!-- ========================= PRODUCT DETAIL SECTION ========================= -->
+<section class="product-detail-section" style="background: var(--bg-dark); padding: 60px 0;">
     <div class="container">
-    
-    <!-- ============================ COMPONENT 1 ================================= -->
-    <div class="card">
-        <div class="row no-gutters">
-            <aside class="col-md-6">
-    <article class="gallery-wrap"> 
-        <div class="img-big-wrap">
-           <a href="#"><img src="{{ single_product.images.url }}" class="img-fluid"></a>
-        </div> <!-- img-big-wrap.// -->
-        
-    </article> <!-- gallery-wrap .end// -->
-            </aside>
-            <main class="col-md-6 border-left">
-              
-              <form action="{% url 'add_cart' single_product.id %}" method="POST">
-              {% csrf_token %}
-              <article class="content-body">
-    
-      
-    <h2 class="title">{{ single_product.product_name }}</h2>
-    
-    <div class="mb-3"> 
-        <var class="price h4">{{ single_product.price }}</var> 
-    </div> 
-    
-    <p>{{single_product.description}}</p>
-    
-    
-    <hr>
-        <div class="row">
-            <div class="item-option-select">
-                <h6>Choose Color</h6>
-                <select name="color" id="color" class="form-control" required>
-                  <option value="" disabled selected>Select a color</option>
-                  {% if variations.color %}
-                    {% for variation in variations.color %}
-                      <option value="{{ variation.variation_value | lower }}">{{ variation.variation_value | capfirst }}</option>
-                    {% endfor %}
-                  {% endif %}
-                </select>
+        <!-- Product Main Info -->
+        <div class="row mb-5">
+            <!-- Product Image -->
+            <div class="col-lg-6 mb-4">
+                <div class="product-gallery" style="background: var(--bg-light); border-radius: var(--radius-large); padding: 30px; border: 1px solid var(--border-light);">
+                    <div class="main-image">
+                        <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}" 
+                             class="img-fluid" style="width: 100%; height: 500px; object-fit: cover; border-radius: var(--radius-medium);">
+                    </div>
+                </div>
             </div>
-        </div> <!-- row.// -->
-        <div class="row">
-            <div class="item-option-select">
-                <h6>Select Size</h6>
-                <select name="size" id="size" class="form-control">
-                  <option value="" disabled selected>Select a size</option>
-                  {% if variations.size %}
-                    {% for variation in variations.size %}
-                      <option value="{{ variation.variation_value | lower }}">{{ variation.variation_value | upper }}</option>
-                    {% endfor %}
-                  {% endif %}
-                </select> 
-            </div>
-        </div> <!-- row.// -->
-        <hr>
-        {% if single_product.stock > 0 %}
-
-            <a href="{% url 'add_cart' single_product.id %}" class="btn btn-primary"> <span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>  </a>
-          
-        {% else %}
-          <button type ="submit" class="btn btn-secondary disabled"> <span class="text">Out of Stock</span> <i class="fas fa-shopping-cart"></i>  </button>
-        {% endif %}
-    </article> <!-- product-info-aside .// -->
-  </form>          
-  </form></main> <!-- col.// -->
-        </div> <!-- row.// -->
-    </div> <!-- card.// -->
-    <!-- ============================ COMPONENT 1 END .// ================================= -->
-    
-    <br>
-    
-    <!-- ============================ VIRTUAL TRY-ON SECTION ================================= -->
-    <div class="card">
-        <div class="card-header">
-            <h4>Virtual Try-On</h4>
-        </div>
-        <div class="card-body">
-            <!-- VTon Tabs -->
-            <ul class="nav nav-tabs" id="vtonTabs" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" id="image-vton-tab" data-toggle="tab" href="#image-vton" role="tab">Image Gen VTon</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="video-vton-tab" data-toggle="tab" href="#video-vton" role="tab">Video Gen VTon</a>
-                </li>
-            </ul>
             
-            <!-- VTon Tab Content -->
-            <div class="tab-content" id="vtonTabsContent">
-                <!-- Image Gen VTon Tab -->
-                <div class="tab-pane fade show active" id="image-vton" role="tabpanel">
-                    <div class="mt-3">
-                        <h5>Upload Images for Image-based Virtual Try-On</h5>
-                        <form id="image-vton-form">
-                            <div class="form-group">
-                                <label for="person-image">Person Image:</label>
-                                <input type="file" class="form-control-file" id="person-image" accept="image/*" required>
+            <!-- Product Info -->
+            <div class="col-lg-6">
+                <div class="product-info-card" style="background: var(--bg-light); border-radius: var(--radius-large); padding: 40px; border: 1px solid var(--border-light);">
+                    <h1 style="color: var(--text-primary); font-size: 2.5rem; font-weight: 700; margin-bottom: 20px;">
+                        {{ single_product.product_name }}
+                    </h1>
+                    
+                    <div class="product-rating mb-3">
+                        <div class="stars">
+                            <i class="fas fa-star" style="color: #ffc107;"></i>
+                            <i class="fas fa-star" style="color: #ffc107;"></i>
+                            <i class="fas fa-star" style="color: #ffc107;"></i>
+                            <i class="fas fa-star" style="color: #ffc107;"></i>
+                            <i class="far fa-star" style="color: #ffc107;"></i>
+                        </div>
+                        <span style="color: var(--text-secondary); margin-left: 10px;">(4.2) • 127 reviews</span>
+                    </div>
+                    
+                    <div class="product-price mb-4">
+                        <span style="color: var(--text-primary); font-size: 2rem; font-weight: 700;">${{ single_product.price }}</span>
+                        <span style="color: var(--text-secondary); margin-left: 10px;">Free shipping</span>
+                    </div>
+                    
+                    <div class="product-description mb-4">
+                        <p style="color: var(--text-secondary); line-height: 1.6;">{{ single_product.description }}</p>
+                    </div>
+                    
+                    <form action="{% url 'add_cart' single_product.id %}" method="POST">
+                        {% csrf_token %}
+                        
+                        <!-- Color Selection -->
+                        {% if variations.color %}
+                        <div class="mb-4">
+                            <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 10px; display: block;">Color</label>
+                            <select name="color" id="color" class="form-control" required 
+                                    style="background: var(--bg-dark); border: 1px solid var(--border-light); color: var(--text-primary); border-radius: 8px; padding: 12px;">
+                                <option value="" disabled selected>Choose a color</option>
+                                {% for variation in variations.color %}
+                                <option value="{{ variation.variation_value | lower }}">{{ variation.variation_value | capfirst }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Size Selection -->
+                        {% if variations.size %}
+                        <div class="mb-4">
+                            <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 10px; display: block;">Size</label>
+                            <div class="size-selector" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
+                                {% for variation in variations.size %}
+                                <label class="size-option" style="cursor: pointer;">
+                                    <input type="radio" name="size" value="{{ variation.variation_value | lower }}" required style="display: none;">
+                                    <span class="size-btn" style="display: inline-block; padding: 10px 15px; border: 2px solid var(--border-light); border-radius: 8px; background: var(--bg-dark); color: var(--text-secondary); font-weight: 600; transition: all 0.3s ease; min-width: 50px; text-align: center;">{{ variation.variation_value | upper }}</span>
+                                </label>
+                                {% endfor %}
                             </div>
-                            <div class="form-group">
-                                <label for="cloth-image">Cloth Image:</label>
-                                <input type="file" class="form-control-file" id="cloth-image" accept="image/*" required>
+                            <small style="color: var(--text-secondary);">
+                                <i class="fas fa-ruler"></i> <a href="#" style="color: var(--accent-color); text-decoration: none;">Size Guide</a>
+                            </small>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Action Buttons -->
+                        <div class="product-actions mb-4">
+                            {% if single_product.stock > 0 %}
+                            <button type="submit" class="btn btn-primary btn-lg mr-3" 
+                                    style="background: var(--accent-color); border: none; border-radius: 8px; padding: 15px 30px; color: white; font-weight: 600;">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-secondary btn-lg mr-3 disabled" 
+                                    style="background: var(--text-secondary); border: none; border-radius: 8px; padding: 15px 30px; color: white;">
+                                <i class="fas fa-times"></i> Out of Stock
+                            </button>
+                            {% endif %}
+                            
+                            <button type="button" class="btn btn-outline-primary btn-lg" onclick="scrollToVTON()" 
+                                    style="border: 2px solid var(--accent-color); color: var(--accent-color); background: transparent; border-radius: 8px; padding: 13px 28px; font-weight: 600;">
+                                <i class="fas fa-magic"></i> Try On Virtually
+                            </button>
+                        </div>
+                        
+                        <div class="product-features">
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <i class="fas fa-shipping-fast" style="font-size: 1.5rem; color: var(--text-secondary); margin-bottom: 10px;"></i>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0;">Free Shipping</p>
+                                </div>
+                                <div class="col-4">
+                                    <i class="fas fa-undo" style="font-size: 1.5rem; color: var(--text-secondary); margin-bottom: 10px;"></i>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0;">Easy Returns</p>
+                                </div>
+                                <div class="col-4">
+                                    <i class="fas fa-shield-alt" style="font-size: 1.5rem; color: var(--text-secondary); margin-bottom: 10px;"></i>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0;">Secure Payment</p>
+                                </div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Generate Try-On (Image)</button>
-                        </form>
-                        <div id="image-vton-result" class="mt-3" style="display: none;">
-                            <h5>Result:</h5>
-                            <img id="image-vton-output" src="" alt="VTon Result" class="img-fluid">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ========================= VIRTUAL TRY-ON SECTION ========================= -->
+<section id="vton-section" class="vton-section" style="background: var(--bg-section); padding: 80px 0;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 style="color: var(--text-primary); font-size: 2.5rem; font-weight: 700; margin-bottom: 15px;">Try This Item Virtually</h2>
+            <p style="color: var(--text-secondary); font-size: 1.2rem;">See how this {{ single_product.product_name }} looks on you with our AI-powered virtual try-on</p>
+        </div>
+        
+        <div class="row justify-content-center">
+            <!-- Image Virtual Try-On -->
+            <div class="col-lg-6 mb-4">
+                <div class="vton-card">
+                    <div class="vton-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <h4>Image Try-On</h4>
+                    <p>Upload your photo to see how this item looks on you</p>
+                    
+                    <form id="product-image-vton-form">
+                        <!-- Hidden input for product image -->
+                        <input type="hidden" id="product-image-url" value="{{ single_product.images.url }}">
+                        
+                        <div class="mb-4">
+                            <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 10px; display: block;">Your Photo</label>
+                            <div class="upload-area">
+                                <div class="upload-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <h6>Upload your photo</h6>
+                                <p>Drop your image here or click to browse</p>
+                                <input type="file" id="person-image-product" class="file-input" accept="image/*" required>
+                            </div>
+                            <small style="color: var(--text-secondary); margin-top: 10px; display: block;">
+                                <i class="fas fa-info-circle"></i> 
+                                Best results with full-body photos in good lighting
+                            </small>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 10px; display: block;">Product Item</label>
+                            <div class="product-preview" style="border: 2px solid var(--border-light); border-radius: 12px; padding: 20px; text-align: center; background: var(--bg-dark);">
+                                <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}" 
+                                     style="max-height: 150px; max-width: 100%; object-fit: contain; border-radius: 8px;">
+                                <p style="color: var(--text-primary); font-weight: 600; margin: 15px 0 5px;">{{ single_product.product_name }}</p>
+                                <small style="color: var(--text-secondary);">This item will be used for virtual try-on</small>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" class="btn-upload">
+                                <i class="fas fa-magic"></i> Generate Virtual Try-On
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Results Section -->
+                    <div id="product-image-vton-result" class="mt-5" style="display: none;">
+                        <hr style="border-color: var(--border-light); margin: 30px 0;">
+                        <h5 style="color: var(--text-primary); text-align: center; margin-bottom: 20px;">Your Virtual Try-On Result</h5>
+                        <div class="text-center">
+                            <img id="product-image-vton-output" class="img-fluid" style="border-radius: var(--radius-medium); box-shadow: var(--shadow-card); max-height: 500px;">
+                        </div>
+                        <div class="text-center mt-3">
+                            <button class="btn btn-outline-primary mr-2" onclick="downloadProductImage()" 
+                                    style="border: 1px solid var(--accent-color); color: var(--accent-color); background: transparent; border-radius: 8px; padding: 8px 16px;">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                            <button class="btn btn-outline-secondary mr-2" onclick="shareProductResult()" 
+                                    style="border: 1px solid var(--text-secondary); color: var(--text-secondary); background: transparent; border-radius: 8px; padding: 8px 16px;">
+                                <i class="fas fa-share"></i> Share
+                            </button>
+                            <button class="btn btn-primary" onclick="addToCartAfterTryOn()" 
+                                    style="background: var(--accent-color); border: none; color: white; border-radius: 8px; padding: 8px 16px;">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Video Gen VTon Tab -->
-                <div class="tab-pane fade" id="video-vton" role="tabpanel">
-                    <div class="mt-3">
-                        <h5>Upload Image for Video-based Virtual Try-On</h5>
-                        <form id="video-vton-form">
-                            <div class="form-group">
-                                <label for="video-person-image">Person Image:</label>
-                                <input type="file" class="form-control-file" id="video-person-image" accept="image/*" required>
+            </div>
+            
+            <!-- Video Virtual Try-On -->
+            <div class="col-lg-6 mb-4">
+                <div class="vton-card">
+                    <div class="vton-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h4>Video Try-On</h4>
+                    <p>Create a personalized fashion video with this item</p>
+                    
+                    <form id="product-video-vton-form">
+                        <div class="mb-4">
+                            <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 10px; display: block;">Your Photo</label>
+                            <div class="upload-area">
+                                <div class="upload-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <h6>Upload your photo</h6>
+                                <p>We'll create a fashion video for you</p>
+                                <input type="file" id="video-person-image-product" class="file-input" accept="image/*" required>
                             </div>
-                            <button type="submit" class="btn btn-primary">Generate Try-On (Video)</button>
-                        </form>
-                        <div id="video-vton-result" class="mt-3" style="display: none;">
-                            <h5>Result:</h5>
-                            <video id="video-vton-output" src="" controls class="img-fluid"></video>
+                            <small style="color: var(--text-secondary); margin-top: 10px; display: block;">
+                                <i class="fas fa-info-circle"></i> 
+                                Video generation may take 1-2 minutes
+                            </small>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" class="btn-upload">
+                                <i class="fas fa-play"></i> Generate Fashion Video
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Video Results Section -->
+                    <div id="product-video-vton-result" class="mt-5" style="display: none;">
+                        <hr style="border-color: var(--border-light); margin: 30px 0;">
+                        <h5 style="color: var(--text-primary); text-align: center; margin-bottom: 20px;">Your Fashion Video</h5>
+                        <div class="text-center">
+                            <video id="product-video-vton-output" controls class="img-fluid" style="border-radius: var(--radius-medium); box-shadow: var(--shadow-card); max-height: 500px;">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <div class="text-center mt-3">
+                            <button class="btn btn-outline-primary mr-2" onclick="downloadProductVideo()" 
+                                    style="border: 1px solid var(--accent-color); color: var(--accent-color); background: transparent; border-radius: 8px; padding: 8px 16px;">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                            <button class="btn btn-outline-secondary mr-2" onclick="shareProductVideo()" 
+                                    style="border: 1px solid var(--text-secondary); color: var(--text-secondary); background: transparent; border-radius: 8px; padding: 8px 16px;">
+                                <i class="fas fa-share"></i> Share
+                            </button>
+                            <button class="btn btn-primary" onclick="addToCartAfterTryOn()" 
+                                    style="background: var(--accent-color); border: none; color: white; border-radius: 8px; padding: 8px 16px;">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- ============================ VIRTUAL TRY-ON SECTION END ================================= -->
+</section>
 
-    <br>
-    
-    <div class="row">
-                <div class="col-md-9">
-    
-        <header class="section-heading">
-            <h3>Customer Reviews </h3>  
-            
-        </header>
-    
-        <article class="box mb-3">
-            <div class="icontext w-100">
-                <img src="./images/avatars/avatar1.jpg" class="img-xs icon rounded-circle">
-                <div class="text">
-                    <span class="date text-muted float-md-right">24.04.2020 </span>  
-                    <h6 class="mb-1">Mike John </h6>
+<!-- ========================= REVIEWS SECTION ========================= -->
+<section class="reviews-section" style="background: var(--bg-dark); padding: 80px 0;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="reviews-container" style="background: var(--bg-light); border-radius: var(--radius-large); padding: 40px; border: 1px solid var(--border-light);">
+                    <h3 style="color: var(--text-primary); font-weight: 700; margin-bottom: 30px;">Customer Reviews</h3>
                     
+                    <!-- Review Summary -->
+                    <div class="review-summary mb-4" style="background: var(--bg-section); padding: 25px; border-radius: var(--radius-medium);">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 text-center">
+                                <div class="rating-score">
+                                    <span style="font-size: 2.5rem; font-weight: 700; color: var(--text-primary);">4.2</span>
+                                    <div class="stars mb-2">
+                                        <i class="fas fa-star" style="color: #ffc107;"></i>
+                                        <i class="fas fa-star" style="color: #ffc107;"></i>
+                                        <i class="fas fa-star" style="color: #ffc107;"></i>
+                                        <i class="fas fa-star" style="color: #ffc107;"></i>
+                                        <i class="far fa-star" style="color: #ffc107;"></i>
+                                    </div>
+                                    <p style="color: var(--text-secondary); margin-bottom: 0;">Based on 127 reviews</p>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="rating-breakdown">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span style="color: var(--text-secondary); font-size: 0.9rem; margin-right: 10px;">5★</span>
+                                        <div class="progress flex-grow-1 mr-2" style="height: 8px; background: var(--bg-dark);">
+                                            <div class="progress-bar" style="width: 60%; background: var(--accent-color);"></div>
+                                        </div>
+                                        <span style="color: var(--text-secondary); font-size: 0.9rem;">60%</span>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span style="color: var(--text-secondary); font-size: 0.9rem; margin-right: 10px;">4★</span>
+                                        <div class="progress flex-grow-1 mr-2" style="height: 8px; background: var(--bg-dark);">
+                                            <div class="progress-bar" style="width: 25%; background: var(--accent-color);"></div>
+                                        </div>
+                                        <span style="color: var(--text-secondary); font-size: 0.9rem;">25%</span>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span style="color: var(--text-secondary); font-size: 0.9rem; margin-right: 10px;">3★</span>
+                                        <div class="progress flex-grow-1 mr-2" style="height: 8px; background: var(--bg-dark);">
+                                            <div class="progress-bar" style="width: 10%; background: var(--accent-color);"></div>
+                                        </div>
+                                        <span style="color: var(--text-secondary); font-size: 0.9rem;">10%</span>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span style="color: var(--text-secondary); font-size: 0.9rem; margin-right: 10px;">2★</span>
+                                        <div class="progress flex-grow-1 mr-2" style="height: 8px; background: var(--bg-dark);">
+                                            <div class="progress-bar" style="width: 3%; background: var(--accent-color);"></div>
+                                        </div>
+                                        <span style="color: var(--text-secondary); font-size: 0.9rem;">3%</span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <span style="color: var(--text-secondary); font-size: 0.9rem; margin-right: 10px;">1★</span>
+                                        <div class="progress flex-grow-1 mr-2" style="height: 8px; background: var(--bg-dark);">
+                                            <div class="progress-bar" style="width: 2%; background: var(--accent-color);"></div>
+                                        </div>
+                                        <span style="color: var(--text-secondary); font-size: 0.9rem;">2%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Individual Reviews -->
+                    <div class="review-item mb-4 pb-4" style="border-bottom: 1px solid var(--border-light);">
+                        <div class="d-flex mb-3">
+                            <div style="width: 50px; height: 50px; background: var(--accent-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; margin-right: 15px;">
+                                MJ
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 style="color: var(--text-primary); margin-bottom: 5px;">Mike Johnson</h6>
+                                        <div class="stars mb-2">
+                                            <i class="fas fa-star" style="color: #ffc107; font-size: 0.9rem;"></i>
+                                            <i class="fas fa-star" style="color: #ffc107; font-size: 0.9rem;"></i>
+                                            <i class="fas fa-star" style="color: #ffc107; font-size: 0.9rem;"></i>
+                                            <i class="fas fa-star" style="color: #ffc107; font-size: 0.9rem;"></i>
+                                            <i class="fas fa-star" style="color: #ffc107; font-size: 0.9rem;"></i>
+                                        </div>
+                                    </div>
+                                    <small style="color: var(--text-secondary);">2 days ago</small>
+                                </div>
+                                <p style="color: var(--text-secondary); margin-bottom: 15px; line-height: 1.6;">Perfect fit and great quality! The virtual try-on feature helped me choose the right size. Highly recommend this product.</p>
+                                <div class="review-actions">
+                                    <button class="btn btn-sm mr-2" style="background: transparent; border: 1px solid var(--border-light); color: var(--text-secondary); border-radius: 6px; padding: 5px 12px;">
+                                        <i class="fas fa-thumbs-up"></i> Helpful (12)
+                                    </button>
+                                    <button class="btn btn-sm" style="background: transparent; border: 1px solid var(--border-light); color: var(--text-secondary); border-radius: 6px; padding: 5px 12px;">
+                                        <i class="fas fa-reply"></i> Reply
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="review-item mb-4">
+                        <div class="d-flex mb-3">
+                            <div style="width: 50px; height: 50px; background: var(--accent-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; margin-right: 15px;">
+                                SA
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 style="color: var(--text-primary); margin-bottom: 5px;">Sarah Anderson</h6>
+                                        <div class="stars mb-2">
+                                            <i class="fas fa-star" style="color: #ffc107; font-size: 0.9rem;"></i>
+                                            <i class="fas fa-star" style="color: #ffc107; font-size: 0.9rem;"></i>
+                                            <i class="fas fa-star" style="color: #ffc107; font-size: 0.9rem;"></i>
+                                            <i class="fas fa-star" style="color: #ffc107; font-size: 0.9rem;"></i>
+                                            <i class="far fa-star" style="color: #ffc107; font-size: 0.9rem;"></i>
+                                        </div>
+                                    </div>
+                                    <small style="color: var(--text-secondary);">1 week ago</small>
+                                </div>
+                                <p style="color: var(--text-secondary); margin-bottom: 15px; line-height: 1.6;">Love the style and comfort. The AI styling suggestions were spot on! Will definitely order more.</p>
+                                <div class="review-actions">
+                                    <button class="btn btn-sm mr-2" style="background: transparent; border: 1px solid var(--border-light); color: var(--text-secondary); border-radius: 6px; padding: 5px 12px;">
+                                        <i class="fas fa-thumbs-up"></i> Helpful (8)
+                                    </button>
+                                    <button class="btn btn-sm" style="background: transparent; border: 1px solid var(--border-light); color: var(--text-secondary); border-radius: 6px; padding: 5px 12px;">
+                                        <i class="fas fa-reply"></i> Reply
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button class="btn btn-outline-primary" style="border: 1px solid var(--accent-color); color: var(--accent-color); background: transparent; border-radius: 8px; padding: 10px 20px;">
+                            <i class="fas fa-plus"></i> Load More Reviews
+                        </button>
+                    </div>
                 </div>
-            </div> <!-- icontext.// -->
-            <div class="mt-3">
-                <p>
-                    Dummy comment Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                    quis nostrud exercitation ullamco laboris nisi ut aliquip
-                </p>	
             </div>
-        </article>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="sidebar-card mb-4" style="background: var(--bg-light); border-radius: var(--radius-large); padding: 30px; border: 1px solid var(--border-light);">
+                    <h5 style="color: var(--text-primary); font-weight: 600; margin-bottom: 20px;">Write a Review</h5>
+                    <form>
+                        <div class="mb-3">
+                            <label style="color: var(--text-primary); font-weight: 500; margin-bottom: 10px; display: block;">Your Rating</label>
+                            <div class="rating-input" style="display: flex; gap: 5px; margin-bottom: 15px;">
+                                <i class="far fa-star" data-rating="1" style="font-size: 1.5rem; color: var(--text-light); cursor: pointer; transition: color 0.2s;"></i>
+                                <i class="far fa-star" data-rating="2" style="font-size: 1.5rem; color: var(--text-light); cursor: pointer; transition: color 0.2s;"></i>
+                                <i class="far fa-star" data-rating="3" style="font-size: 1.5rem; color: var(--text-light); cursor: pointer; transition: color 0.2s;"></i>
+                                <i class="far fa-star" data-rating="4" style="font-size: 1.5rem; color: var(--text-light); cursor: pointer; transition: color 0.2s;"></i>
+                                <i class="far fa-star" data-rating="5" style="font-size: 1.5rem; color: var(--text-light); cursor: pointer; transition: color 0.2s;"></i>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label style="color: var(--text-primary); font-weight: 500; margin-bottom: 10px; display: block;">Your Review</label>
+                            <textarea class="form-control" rows="4" placeholder="Share your experience with this product..." 
+                                      style="background: var(--bg-dark); border: 1px solid var(--border-light); color: var(--text-primary); border-radius: 8px;"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block" 
+                                style="background: var(--accent-color); border: none; border-radius: 8px; padding: 12px; font-weight: 600;">Submit Review</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Product Detail Page Specific Styles */
+.size-option input:checked + .size-btn {
+    border-color: var(--accent-color) !important;
+    background: var(--accent-color) !important;
+    color: white !important;
+}
+
+.product-actions .btn:hover {
+    transform: translateY(-2px);
+}
+
+.rating-input i:hover,
+.rating-input i.active {
+    color: #ffc107 !important;
+}
+
+.review-actions .btn:hover {
+    background: var(--bg-section) !important;
+    border-color: var(--accent-color) !important;
+    color: var(--accent-color) !important;
+}
+</style>
+
+<script>
+// Scroll to VTON section
+function scrollToVTON() {
+    document.getElementById('vton-section').scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
+}
+
+// Product-specific VTON functions
+function downloadProductImage() {
+    const img = document.getElementById('product-image-vton-output');
+    const link = document.createElement('a');
+    link.download = 'virtual-tryon-{{ single_product.product_name|slugify }}.jpg';
+    link.href = img.src;
+    link.click();
+}
+
+function downloadProductVideo() {
+    const video = document.getElementById('product-video-vton-output');
+    const link = document.createElement('a');
+    link.download = 'fashion-video-{{ single_product.product_name|slugify }}.mp4';
+    link.href = video.src;
+    link.click();
+}
+
+function shareProductResult() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Virtual Try-On: {{ single_product.product_name }}',
+            text: 'Check out how {{ single_product.product_name }} looks on me!',
+            url: window.location.href
+        });
+    } else {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            alert('Link copied to clipboard!');
+        });
+    }
+}
+
+function shareProductVideo() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Fashion Video: {{ single_product.product_name }}',
+            text: 'Check out my fashion video with {{ single_product.product_name }}!',
+            url: window.location.href
+        });
+    } else {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            alert('Link copied to clipboard!');
+        });
+    }
+}
+
+function addToCartAfterTryOn() {
+    // Scroll back to product info and highlight add to cart
+    document.querySelector('.product-info-card').scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+    });
     
+    // Highlight the add to cart button
+    const addToCartBtn = document.querySelector('button[type="submit"]');
+    if (addToCartBtn) {
+        addToCartBtn.style.animation = 'pulse 1s ease-in-out 3';
         
+        setTimeout(() => {
+            addToCartBtn.style.animation = '';
+        }, 3000);
+    }
+}
+
+// Rating input functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const ratingStars = document.querySelectorAll('.rating-input i');
     
-        </div> <!-- col.// -->
-    </div> <!-- row.// -->
+    ratingStars.forEach((star, index) => {
+        star.addEventListener('click', function() {
+            const rating = index + 1;
+            
+            ratingStars.forEach((s, i) => {
+                if (i < rating) {
+                    s.classList.remove('far');
+                    s.classList.add('fas', 'active');
+                } else {
+                    s.classList.remove('fas', 'active');
+                    s.classList.add('far');
+                }
+            });
+        });
+        
+        star.addEventListener('mouseover', function() {
+            const rating = index + 1;
+            
+            ratingStars.forEach((s, i) => {
+                if (i < rating) {
+                    s.style.color = '#ffc107';
+                } else {
+                    s.style.color = 'var(--text-light)';
+                }
+            });
+        });
+    });
     
-    
-    </div> <!-- container .//  -->
-    </section>
-    <!-- ========================= SECTION CONTENT END// ========================= -->
-     {% endblock %}
+    document.querySelector('.rating-input').addEventListener('mouseleave', function() {
+        ratingStars.forEach(star => {
+            if (!star.classList.contains('active')) {
+                star.style.color = 'var(--text-light)';
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}
