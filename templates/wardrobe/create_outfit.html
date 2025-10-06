@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- ========================= CREATE OUTFIT ========================= -->
+<section class="create-outfit-section" style="background: var(--bg-dark); padding: 80px 0; min-height: 80vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Header -->
+                <div class="text-center mb-5">
+                    <h1 style="color: var(--text-primary); font-size: 2.5rem; font-weight: 700; margin-bottom: 15px;">
+                        <i class="fas fa-palette"></i> Create New Outfit
+                    </h1>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem;">Mix and match your wardrobe items to create the perfect outfit</p>
+                </div>
+
+                <!-- Form Card -->
+                <div class="form-card" style="background: var(--bg-light); border-radius: var(--radius-large); padding: 40px; border: 1px solid var(--border-light);">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Basic Information -->
+                        <div class="form-section mb-4">
+                            <h5 style="color: var(--text-primary); font-weight: 600; margin-bottom: 20px; border-bottom: 1px solid var(--border-light); padding-bottom: 10px;">
+                                <i class="fas fa-info-circle"></i> Outfit Details
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px; display: block;">Outfit Name *</label>
+                                    {{ form.name }}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px; display: block;">Season</label>
+                                    {{ form.season }}
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px; display: block;">Occasion</label>
+                                    {{ form.occasion }}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px; display: block;">Outfit Photo (Optional)</label>
+                                    {{ form.outfit_image }}
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px; display: block;">Description</label>
+                                {{ form.description }}
+                            </div>
+                        </div>
+
+                        <!-- Item Selection -->
+                        <div class="form-section mb-4">
+                            <h5 style="color: var(--text-primary); font-weight: 600; margin-bottom: 20px; border-bottom: 1px solid var(--border-light); padding-bottom: 10px;">
+                                <i class="fas fa-tshirt"></i> Select Items for This Outfit
+                            </h5>
+                            
+                            <div class="items-selection">
+                                <div class="row">
+                                    {% for item in form.items %}
+                                    <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-3">
+                                        <div class="item-selector" style="position: relative;">
+                                            <label class="item-checkbox-label" style="cursor: pointer; display: block;">
+                                                {{ item.tag }}
+                                                <div class="item-preview" style="background: var(--bg-section); border-radius: var(--radius-medium); overflow: hidden; border: 2px solid transparent; transition: all 0.3s ease; aspect-ratio: 1;">
+                                                    {% if item.choice_value.image %}
+                                                        <img src="{{ item.choice_value.image.url }}" alt="{{ item.choice_value.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                                    {% else %}
+                                                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-light);">
+                                                            <i class="fas fa-tshirt" style="font-size: 2rem;"></i>
+                                                        </div>
+                                                    {% endif %}
+                                                    
+                                                    <!-- Overlay -->
+                                                    <div class="item-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; opacity: 0; transition: all 0.3s ease;">
+                                                        <i class="fas fa-check" style="color: white; font-size: 1.5rem;"></i>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="item-info text-center mt-2">
+                                                    <small style="color: var(--text-primary); font-weight: 600; display: block;">{{ item.choice_value.name }}</small>
+                                                    <small style="color: var(--text-secondary);">{{ item.choice_value.get_category_display }}</small>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    {% empty %}
+                                    <div class="col-12 text-center">
+                                        <div class="empty-items" style="padding: 40px; background: var(--bg-section); border-radius: var(--radius-medium);">
+                                            <i class="fas fa-tshirt" style="font-size: 3rem; color: var(--text-light); margin-bottom: 15px;"></i>
+                                            <h6 style="color: var(--text-primary); margin-bottom: 10px;">No items in your wardrobe</h6>
+                                            <p style="color: var(--text-secondary); margin-bottom: 20px;">Add some items to your wardrobe first to create outfits.</p>
+                                            <a href="{% url 'wardrobe:add_item' %}" class="btn btn-hero">
+                                                <i class="fas fa-plus"></i> Add Items
+                                            </a>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions text-center">
+                            <button type="submit" class="btn btn-hero me-3" style="padding: 15px 40px; font-size: 1.1rem;">
+                                <i class="fas fa-palette"></i> Create Outfit
+                            </button>
+                            <a href="{% url 'wardrobe:dashboard' %}" class="btn btn-hero-outline" style="padding: 13px 38px; font-size: 1.1rem;">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Form Styling */
+.form-control {
+    background: var(--bg-dark) !important;
+    border: 1px solid var(--border-light) !important;
+    color: var(--text-primary) !important;
+    border-radius: var(--radius-small) !important;
+    padding: 12px 15px !important;
+}
+
+.form-control:focus {
+    background: var(--bg-dark) !important;
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 122, 255, 0.25) !important;
+    color: var(--text-primary) !important;
+}
+
+.form-control::placeholder {
+    color: var(--text-secondary) !important;
+}
+
+select.form-control option {
+    background: var(--bg-dark) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Item Selection Styling */
+.item-checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.item-checkbox-label input[type="checkbox"]:checked + .item-preview {
+    border-color: var(--accent-color);
+    transform: scale(0.95);
+}
+
+.item-checkbox-label input[type="checkbox"]:checked + .item-preview .item-overlay {
+    opacity: 1;
+}
+
+.item-preview:hover {
+    border-color: var(--accent-color);
+    transform: scale(1.05);
+}
+
+.item-preview:hover .item-overlay {
+    opacity: 0.8;
+}
+
+/* Form Actions */
+.form-actions .btn:hover {
+    transform: translateY(-2px);
+}
+</style>
+
+<script>
+$(document).ready(function() {
+    // Handle item selection visual feedback
+    $('.item-checkbox-label input[type="checkbox"]').on('change', function() {
+        const preview = $(this).siblings('.item-preview');
+        const overlay = preview.find('.item-overlay');
+        
+        if ($(this).is(':checked')) {
+            preview.css('border-color', 'var(--accent-color)');
+            overlay.css('opacity', '1');
+        } else {
+            preview.css('border-color', 'transparent');
+            overlay.css('opacity', '0');
+        }
+    });
+    
+    // Initialize already selected items
+    $('.item-checkbox-label input[type="checkbox"]:checked').each(function() {
+        const preview = $(this).siblings('.item-preview');
+        const overlay = preview.find('.item-overlay');
+        preview.css('border-color', 'var(--accent-color)');
+        overlay.css('opacity', '1');
+    });
+});
+</script>
+
+{% endblock %}

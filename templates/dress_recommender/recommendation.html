@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- ========================= RECOMMENDATION RESULTS ========================= -->
+<section class="recommendation-results" style="background: var(--bg-dark); padding: 80px 0; min-height: 80vh;">
+    <div class="container">
+        <!-- Weather Header -->
+        <div class="weather-header text-center mb-5">
+            <div class="weather-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; padding: 40px; color: white; margin-bottom: 40px;">
+                <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 20px;">
+                    <i class="fas fa-map-marker-alt"></i> {{ weather_data.city }}
+                </h1>
+                <div class="row align-items-center">
+                    <div class="col-md-4">
+                        <div class="temperature-display">
+                            <div style="font-size: 4rem; font-weight: 700; color: #ffd700;">{{ weather_data.temperature|floatformat:1 }}°C</div>
+                            <div style="font-size: 1.2rem; opacity: 0.9;">Feels like {{ weather_data.feels_like|floatformat:1 }}°C</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="weather-condition">
+                            <div style="font-size: 3rem; margin-bottom: 10px;">
+                                {% if weather_data.condition == 'sunny' %}
+                                    <i class="fas fa-sun" style="color: #ffd700;"></i>
+                                {% elif weather_data.condition == 'cloudy' %}
+                                    <i class="fas fa-cloud" style="color: #e0e0e0;"></i>
+                                {% elif weather_data.condition == 'rainy' %}
+                                    <i class="fas fa-cloud-rain" style="color: #87ceeb;"></i>
+                                {% elif weather_data.condition == 'snowy' %}
+                                    <i class="fas fa-snowflake" style="color: #ffffff;"></i>
+                                {% else %}
+                                    <i class="fas fa-wind" style="color: #b0c4de;"></i>
+                                {% endif %}
+                            </div>
+                            <div style="font-size: 1.5rem; font-weight: 600;">{{ weather_data.condition|title }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="weather-details">
+                            <div style="margin-bottom: 10px;">
+                                <i class="fas fa-tint"></i> {{ weather_data.humidity }}% Humidity
+                            </div>
+                            <div>
+                                <i class="fas fa-wind"></i> {{ weather_data.wind_speed|floatformat:1 }} km/h Wind
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Recommendation -->
+        <div class="ai-recommendation mb-5">
+            <div class="recommendation-card" style="background: var(--bg-light); border-radius: 20px; padding: 40px; border: 1px solid var(--border-light);">
+                <div class="recommendation-header text-center mb-4">
+                    <h2 style="color: var(--text-primary); font-size: 2.2rem; font-weight: 700; margin-bottom: 15px;">
+                        <i class="fas fa-brain" style="color: #667eea;"></i> AI Recommendation
+                    </h2>
+                    <div class="ai-badge" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 8px 20px; border-radius: 25px; font-size: 0.9rem; display: inline-block;">
+                        <i class="fas fa-robot"></i> Powered by Smart AI
+                    </div>
+                </div>
+                
+                <div class="recommendation-content">
+                    <div class="main-recommendation" style="background: var(--bg-section); border-radius: 15px; padding: 30px; margin-bottom: 30px;">
+                        <h4 style="color: var(--text-primary); margin-bottom: 20px;">
+                            <i class="fas fa-lightbulb" style="color: #ffd700;"></i> Today's Outfit Suggestion
+                        </h4>
+                        <p style="color: var(--text-primary); font-size: 1.1rem; line-height: 1.7; margin-bottom: 0;">
+                            {{ recommendation.recommendation_text }}
+                        </p>
+                    </div>
+                    
+                    {% if recommendation.style_tips %}
+                    <div class="style-tips" style="background: rgba(102, 126, 234, 0.1); border-radius: 15px; padding: 25px; margin-bottom: 25px;">
+                        <h5 style="color: var(--text-primary); margin-bottom: 15px;">
+                            <i class="fas fa-magic" style="color: #667eea;"></i> Style Tips
+                        </h5>
+                        <p style="color: var(--text-primary); line-height: 1.6; margin-bottom: 0;">{{ recommendation.style_tips }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="row">
+                        {% if recommendation.color_suggestions %}
+                        <div class="col-md-6 mb-3">
+                            <div class="suggestion-box" style="background: rgba(255, 215, 0, 0.1); border-radius: 12px; padding: 20px;">
+                                <h6 style="color: var(--text-primary); margin-bottom: 10px;">
+                                    <i class="fas fa-palette" style="color: #ffd700;"></i> Recommended Colors
+                                </h6>
+                                <p style="color: var(--text-secondary); margin-bottom: 0; font-size: 0.95rem;">{{ recommendation.color_suggestions }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if recommendation.fabric_suggestions %}
+                        <div class="col-md-6 mb-3">
+                            <div class="suggestion-box" style="background: rgba(40, 167, 69, 0.1); border-radius: 12px; padding: 20px;">
+                                <h6 style="color: var(--text-primary); margin-bottom: 10px;">
+                                    <i class="fas fa-cut" style="color: #28a745;"></i> Recommended Fabrics
+                                </h6>
+                                <p style="color: var(--text-secondary); margin-bottom: 0; font-size: 0.95rem;">{{ recommendation.fabric_suggestions }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommended Products -->
+        {% if recommendation.recommended_products.all %}
+        <div class="recommended-products mb-5">
+            <h3 style="color: var(--text-primary); font-size: 2rem; font-weight: 700; margin-bottom: 30px; text-align: center;">
+                <i class="fas fa-shopping-bag" style="color: #667eea;"></i> Perfect Matches from Our Store
+            </h3>
+            
+            <div class="row">
+                {% for product in recommendation.recommended_products.all %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="product-card" style="background: var(--bg-light); border-radius: 15px; overflow: hidden; transition: all 0.3s ease; border: 1px solid var(--border-light); height: 100%;">
+                        <div class="product-image" style="position: relative; aspect-ratio: 1; background: var(--bg-section);">
+                            {% if product.images %}
+                                <img src="{{ product.images.url }}" alt="{{ product.product_name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            {% else %}
+                                <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-light);">
+                                    <i class="fas fa-tshirt" style="font-size: 3rem;"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="weather-match-badge" style="position: absolute; top: 10px; left: 10px; background: #28a745; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">
+                                <i class="fas fa-check"></i> Weather Match
+                            </div>
+                        </div>
+                        
+                        <div class="product-info" style="padding: 20px;">
+                            <h6 style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px;">{{ product.product_name }}</h6>
+                            <p style="color: var(--accent-color); font-size: 1.2rem; font-weight: 700; margin-bottom: 15px;">${{ product.price }}</p>
+                            <a href="{{ product.get_url }}" class="btn btn-primary btn-sm btn-block">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Action Buttons -->
+        <div class="action-buttons text-center">
+            {% if user.is_authenticated %}
+            <button class="btn btn-success btn-lg mr-3" onclick="saveRecommendation({{ recommendation.id }})" style="padding: 15px 30px; border-radius: 25px;">
+                <i class="fas fa-heart"></i> Save Recommendation
+            </button>
+            {% endif %}
+            
+            <a href="{% url 'dress_recommender:home' %}" class="btn btn-outline-primary btn-lg mr-3" style="padding: 15px 30px; border-radius: 25px;">
+                <i class="fas fa-redo"></i> Get New Recommendation
+            </a>
+            
+            <a href="{% url 'quick_shopping' %}" class="btn btn-primary btn-lg" style="padding: 15px 30px; border-radius: 25px;">
+                <i class="fas fa-shopping-bag"></i> Shop Now
+            </a>
+        </div>
+    </div>
+</section>
+
+<script>
+function saveRecommendation(recommendationId) {
+    const formData = new FormData();
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+    formData.append('recommendation_id', recommendationId);
+    
+    fetch('{% url "dress_recommender:save_recommendation" %}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Recommendation saved successfully!');
+            const button = event.target;
+            button.innerHTML = '<i class="fas fa-check"></i> Saved!';
+            button.classList.remove('btn-success');
+            button.classList.add('btn-secondary');
+            button.disabled = true;
+        } else {
+            alert('Error saving recommendation: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error saving recommendation');
+    });
+}
+
+// Add CSRF token if not present
+if (!document.querySelector('[name=csrfmiddlewaretoken]')) {
+    const tokenInput = document.createElement('input');
+    tokenInput.type = 'hidden';
+    tokenInput.name = 'csrfmiddlewaretoken';
+    tokenInput.value = '{{ csrf_token }}';
+    document.body.appendChild(tokenInput);
+}
+</script>
+
+<style>
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.recommendation-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.weather-card {
+    animation: slideInDown 0.6s ease-out;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+
+{% endblock %}

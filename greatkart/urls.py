@@ -24,5 +24,8 @@ urlpatterns = [
     path('',views.home,name='home'),
     path('store/',include('store.urls')),
     path('cart/',include('carts.urls')),
+    path('accounts/',include('accounts.urls')),
     path('vton/',include('virtual_tryon.urls')),
+    path('wardrobe/',include('wardrobe.urls')),
+    path('dress-recommender/',include('dress_recommender.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,127 +1,201 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
 {% block content %}
 
-<section class="section-content padding-y bg">
+<section class="cart-section" style="background: var(--bg-dark); padding: 80px 0; min-height: 80vh;">
     <div class="container">
+        <div class="text-center mb-5">
+            <h1 style="color: var(--text-primary); font-size: 2.5rem; font-weight: 700; margin-bottom: 15px;">Shopping Cart</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">Review your items and proceed to checkout</p>
+        </div>
     
     <!-- ============================ COMPONENT 1 ================================= -->
     {% if not cart_items%}
-        <h2 class="text-center">Shopping cart is empty </h2>
-        <br>
-        <div class = 'text-center'>
-        <a href="{% url 'store' %}" class="btn btn-primary">Continue Shopping</a>
+        <div class="empty-cart text-center" style="background: var(--bg-light); border-radius: var(--radius-large); padding: 60px 40px; border: 1px solid var(--border-light);">
+            <i class="fas fa-shopping-cart" style="font-size: 4rem; color: var(--text-light); margin-bottom: 20px;"></i>
+            <h2 style="color: var(--text-primary); font-weight: 600; margin-bottom: 15px;">Your cart is empty</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 30px;">Looks like you haven't added any items to your cart yet.</p>
+            <a href="{% url 'store' %}" class="btn btn-hero">
+                <i class="fas fa-arrow-left"></i> Continue Shopping
+            </a>
         </div>
         {% else %}
 
     <div class="row">
-        <aside class="col-lg-9">
-    <div class="card">
-    <table class="table table-borderless table-shopping-cart">
-    <thead class="text-muted">
-    <tr class="small text-uppercase">
-      <th scope="col">Product</th>
-      <th scope="col" width="120">Quantity</th>
-      <th scope="col" width="120">Price</th>
-      <th scope="col" class="text-right" width="200"> </th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for cart_item in cart_items %}
-
-    
-    <tr>
-        <td>
-            <figure class="itemside align-items-center">
-                <div class="aside">
-                    <img src="{{ cart_item.product.images.url }}" class="img-sm">
+        <div class="col-lg-8 mb-4">
+            <div class="cart-items-card" style="background: var(--bg-light); border-radius: var(--radius-large); padding: 30px; border: 1px solid var(--border-light);">
+                <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 25px;">Cart Items</h3>
+                
+                <div class="cart-table-wrapper">
+                    <table class="table table-borderless" style="margin-bottom: 0;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border-light);">
+                                <th scope="col" style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; padding-bottom: 15px; border: none;">Product</th>
+                                <th scope="col" width="120" style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; padding-bottom: 15px; border: none;">Quantity</th>
+                                <th scope="col" width="120" style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; padding-bottom: 15px; border: none;">Price</th>
+                                <th scope="col" width="100" style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; padding-bottom: 15px; border: none; text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for cart_item in cart_items %}
+                        <tr style="border-bottom: 1px solid var(--border-light);">
+                            <td style="padding: 20px 0; border: none;">
+                                <div class="d-flex align-items-center">
+                                    <div class="cart-item-image" style="margin-right: 15px;">
+                                        <img src="{{ cart_item.product.images.url }}" alt="{{ cart_item.product.product_name }}" 
+                                             style="width: 80px; height: 80px; object-fit: cover; border-radius: var(--radius-small);">
+                                    </div>
+                                    <div class="cart-item-info">
+                                        <h6 style="color: var(--text-primary); font-weight: 600; margin-bottom: 5px;">
+                                            <a href="{{ cart_item.product.get_url }}" style="color: var(--text-primary); text-decoration: none;">
+                                                {{ cart_item.product.product_name }}
+                                            </a>
+                                        </h6>
+                                        {% if cart_item.variations.all %}
+                                            <div class="cart-item-variations">
+                                                {% for item in cart_item.variations.all %}
+                                                    <small style="color: var(--text-secondary); display: block;">
+                                                        {{ item.variation_category | capfirst }}: {{ item.variation_value | capfirst }}
+                                                    </small>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="padding: 20px 0; border: none;">
+                                <div class="quantity-controls" style="display: flex; align-items: center; background: var(--bg-dark); border-radius: var(--radius-small); overflow: hidden; width: fit-content;">
+                                    <a href="{% url 'remove_cart' cart_item.product.id cart_item.id %}" 
+                                       style="background: transparent; border: none; color: var(--text-secondary); padding: 8px 12px; text-decoration: none; display: flex; align-items: center; transition: all 0.3s ease;">
+                                        <i class="fa fa-minus"></i>
+                                    </a>
+                                    <span style="color: var(--text-primary); padding: 8px 15px; font-weight: 600; background: var(--bg-section);">
+                                        {{ cart_item.quantity }}
+                                    </span>
+                                    <form action="{% url 'add_cart' cart_item.product.id %}" method="POST" style="margin: 0;">
+                                        {% csrf_token %}
+                                        {% for item in cart_item.variations.all %}
+                                            <input type="hidden" name="{{ item.variation_category | lower }}" value="{{ item.variation_value | capfirst }}">
+                                        {% endfor %}
+                                        <button type="submit" style="background: transparent; border: none; color: var(--text-secondary); padding: 8px 12px; cursor: pointer; display: flex; align-items: center; transition: all 0.3s ease;">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                            <td style="padding: 20px 0; border: none;">
+                                <div class="price-info">
+                                    <div style="color: var(--text-primary); font-size: 1.1rem; font-weight: 600; margin-bottom: 3px;">
+                                        ${{ cart_item.sub_total }}
+                                    </div>
+                                    <small style="color: var(--text-secondary);">
+                                        ${{ cart_item.product.price }} each
+                                    </small>
+                                </div>
+                            </td>
+                            <td style="padding: 20px 0; border: none; text-align: center;">
+                                <a href="{% url 'remove_cart_item' cart_item.product.id %}" 
+                                   style="background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: var(--radius-small); text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                <figcaption class="info">
-                    <a href="{{ cart_item.product.get_url }}" class="title text-dark">{{ cart_item.product.product_name }}</a>
-                    <p class="text-muted small">
-                        {% if cart_item.variations.all %}
-                            {% for item in cart_item.variations.all %}
-                                {{ item.variation_category | capfirst }}: {{ item.variation_value | capfirst }}<br>
-                            {% endfor %}
-                        {% endif %}
-                    </p>
-                </figcaption>
-            </figure>
-        </td>
-        <td> 
-            <div class="col">
-                <div class="input-group input-spinner">
-                    <div class="input-group-prepend">
-                        <a href="{% url 'remove_cart' cart_item.product.id cart_item.id %}" class="btn btn-light" type="button" id="button-minus"> 
-                            <i class="fa fa-minus"></i> 
-                        </a>
+            </div>
+        </div>
+        
+        <!-- Order Summary -->
+        <div class="col-lg-4">
+            <div class="order-summary-card" style="background: var(--bg-light); border-radius: var(--radius-large); padding: 30px; border: 1px solid var(--border-light); position: sticky; top: 100px;">
+                <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 25px;">Order Summary</h3>
+                
+                <div class="summary-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-light);">
+                    <span style="color: var(--text-secondary);">Subtotal:</span>
+                    <span style="color: var(--text-primary); font-weight: 600;">${{ total|floatformat:2 }}</span>
+                </div>
+                
+                <div class="summary-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-light);">
+                    <span style="color: var(--text-secondary);">Tax:</span>
+                    <span style="color: var(--text-primary); font-weight: 600;">${{ tax|floatformat:2 }}</span>
+                </div>
+                
+                <div class="summary-row" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 2px solid var(--border-light);">
+                    <span style="color: var(--text-secondary);">Shipping:</span>
+                    <span style="color: var(--accent-color); font-weight: 600;">Free</span>
+                </div>
+                
+                <div class="summary-total" style="display: flex; justify-content: space-between; align-items: center; padding: 20px 0; margin-bottom: 25px;">
+                    <span style="color: var(--text-primary); font-size: 1.2rem; font-weight: 600;">Grand Total:</span>
+                    <span style="color: var(--text-primary); font-size: 1.4rem; font-weight: 700;">${{ grand_total|floatformat:2 }}</span>
+                </div>
+                
+                <div class="payment-methods text-center mb-4">
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 15px;">Secure payment with:</p>
+                    <div class="payment-icons" style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;">
+                        <i class="fab fa-cc-visa" style="font-size: 1.5rem; color: var(--text-secondary);"></i>
+                        <i class="fab fa-cc-mastercard" style="font-size: 1.5rem; color: var(--text-secondary);"></i>
+                        <i class="fab fa-cc-paypal" style="font-size: 1.5rem; color: var(--text-secondary);"></i>
+                        <i class="fab fa-cc-apple-pay" style="font-size: 1.5rem; color: var(--text-secondary);"></i>
                     </div>
-                    <input type="text" class="form-control" value="{{ cart_item.quantity }}">
-                    <div class="input-group-append">
-                        <form action="{% url 'add_cart' cart_item.product.id %}" method="POST">
-                            {% csrf_token %}
-                            {% for item in cart_item.variations.all %}
-                                <input type="hidden" name="{{ item.variation_category | lower }}" value="{{ item.variation_value | capfirst }}">
-                            {% endfor %}
-                            <button class="btn btn-light" type="submit" id="button-plus">
-                                <i class="fa fa-plus"></i>
-                            </button>
-                        </form>
-                    </div>
-                </div> <!-- input-group.// -->
-            </div> <!-- col.// -->
-        </td>
-        <td> 
-            <div class="price-wrap"> 
-                <var class="price">${{ cart_item.sub_total }}</var> 
-                <small class="text-muted"> ${{ cart_item.product.price }} each </small> 
-            </div> <!-- price-wrap .// -->
-        </td>
-        <td class="text-right"> 
-        <a href="{% url 'remove_cart_item' cart_item.product.id %}" class="btn btn-danger"> Remove</a>
-        </td>
-    </tr>
-    {% endfor %}
-    </tbody>
-    </table>
-    </div> <!-- card.// -->
-    
-        </aside> <!-- col.// -->
-        <aside class="col-lg-3">
-    
-            <div class="card">
-            <div class="card-body">
-                <dl class="dlist-align">
-                  <dt>Total price:</dt>
-                  <dd class="text-right">${{ total|floatformat:2 }}</dd>
-                </dl>
-                <dl class="dlist-align">
-                  <dt>Tax:</dt>
-                  <dd class="text-right">${{ tax|floatformat:2 }}</dd>
-                </dl>
-                <dl class="dlist-align">
-                  <dt>Grand Total:</dt>
-                  <dd class="text-right text-dark b"><strong>${{ grand_total|floatformat:2 }}</strong></dd>
-                </dl>
-                <hr>
-                <p class="text-center mb-3">
-                    <img src="{% static 'images/misc/payments.png' %}" height="26">
-                </p>
-                <a href="./place-order.html" class="btn btn-primary btn-block"> Checkout </a>
-                <a href="{% url 'store' %}" class="btn btn-light btn-block">Continue Shopping</a>
-            </div> <!-- card-body.// -->
-            </div> <!-- card.// -->
-    
-    </aside> <!-- col.// -->
-    
-    
-    </div> <!-- row.// -->
+                </div>
+                
+                <div class="checkout-actions">
+                    <a href="{% url 'checkout' %}" class="btn btn-hero w-100 mb-3" style="padding: 15px; font-size: 1.1rem; font-weight: 600;">
+                        <i class="fas fa-lock"></i> Secure Checkout
+                    </a>
+                    <a href="{% url 'store' %}" class="btn btn-hero-outline w-100" style="padding: 12px; text-align: center; display: block; text-decoration: none;">
+                        <i class="fas fa-arrow-left"></i> Continue Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- ============================ COMPONENT 1 END .// ================================= -->
-    
-    </div> <!-- container .//  -->
-    </section>
-    <!-- ========================= SECTION CONTENT END// ========================= -->
     {% endif %}
+    </div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+<style>
+/* Cart-specific hover effects */
+.quantity-controls a:hover,
+.quantity-controls button:hover {
+    background: var(--accent-color) !important;
+    color: white !important;
+}
+
+.cart-item-info a:hover {
+    color: var(--accent-color) !important;
+}
+
+.checkout-actions a:hover {
+    transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .cart-table-wrapper {
+        overflow-x: auto;
+    }
+    
+    .order-summary-card {
+        position: static !important;
+        margin-top: 30px;
+    }
+    
+    .cart-item-image img {
+        width: 60px !important;
+        height: 60px !important;
+    }
+    
+    .quantity-controls {
+        transform: scale(0.9);
+    }
+}
+</style>
+
 {% endblock %}

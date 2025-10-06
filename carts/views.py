@@ -3,6 +3,7 @@ from .models import Cart, CartItem
 from store.models import Product,Variation 
 from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib import messages
 
 
 # Create your views here.
@@ -130,3 +131,61 @@ def remove_cart_item(request,product_id):
     cart_item = CartItem.objects.get(product=product, cart=cart)
     cart_item.delete()
     return redirect('cart')
+
+def checkout(request):
+    """Simple checkout that adds items to wardrobe"""
+    try:
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+        cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+        
+        if not cart_items.exists():
+            messages.error(request, 'Your cart is empty.')
+            return redirect('cart')
+        
+        if request.user.is_authenticated:
+            # Import here to avoid circular imports
+            from wardrobe.views import add_purchase_to_wardrobe
+            
+            # Add each cart item to wardrobe for authenticated users
+            added_items = []
+            for cart_item in cart_items:
+                variations = cart_item.variation.all() if cart_item.variation.exists() else None
+                
+                wardrobe_item = add_purchase_to_wardrobe(
+                    user=request.user,
+                    product=cart_item.product,
+                    variations=variations,
+                    purchase_price=cart_item.product.price
+                )
+                
+                if wardrobe_item:
+                    added_items.append(wardrobe_item.name)
+            
+            # Clear the cart after "purchase"
+            cart_items.delete()
+            request.session['cart_count'] = 0
+            
+            if added_items:
+                messages.success(
+                    request, 
+                    f'Purchase successful! {len(added_items)} item(s) have been added to your wardrobe: {", ".join(added_items[:3])}{"..." if len(added_items) > 3 else ""}'
+                )
+            else:
+                messages.success(request, 'Purchase successful!')
+            
+            return redirect('wardrobe:dashboard')
+        else:
+            # For anonymous users, just simulate purchase without adding to wardrobe
+            item_count = cart_items.count()
+            cart_items.delete()
+            request.session['cart_count'] = 0
+            
+            messages.success(
+                request, 
+                f'Purchase successful! {item_count} item(s) purchased. Sign up to automatically add purchases to your wardrobe!'
+            )
+            return redirect('wardrobe:dashboard')
+        
+    except Cart.DoesNotExist:
+        messages.error(request, 'No cart found.')
+        return redirect('cart')

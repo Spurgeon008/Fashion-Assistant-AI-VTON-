@@ -6,6 +6,7 @@ from carts.models import CartItem
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponse
 from django.db.models import Q
+import random
 
 def store(request, category_slug=None):
     if category_slug is not None:
@@ -65,3 +66,33 @@ def search(request):
         'product_count':product_count,
          }
     return render(request,'store/store.html',context)
+
+def quick_shopping(request):
+    """Quick Shopping page with curated selections and fast browsing"""
+    
+    # Get featured/trending products (you can customize this logic)
+    featured_products = Product.objects.filter(is_available=True).order_by('-created_date')[:8]
+    
+    # Get products by category for quick browsing
+    categories = Category.objects.all()[:6]  # Limit to 6 categories for quick access
+    
+    # Get random products for "Surprise Me" section
+    all_products = list(Product.objects.filter(is_available=True))
+    surprise_products = random.sample(all_products, min(4, len(all_products))) if all_products else []
+    
+    # Get recently added products
+    new_arrivals = Product.objects.filter(is_available=True).order_by('-created_date')[:6]
+    
+    # Get popular products (you can implement your own logic, for now using random)
+    popular_products = random.sample(all_products, min(6, len(all_products))) if all_products else []
+    
+    context = {
+        'featured_products': featured_products,
+        'categories': categories,
+        'surprise_products': surprise_products,
+        'new_arrivals': new_arrivals,
+        'popular_products': popular_products,
+        'total_products': len(all_products),
+    }
+    
+    return render(request, 'store/quick_shopping.html', context)

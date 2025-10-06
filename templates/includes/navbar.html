@@ -36,7 +36,17 @@
                         <a class="nav-link" href="#vton-section" style="color: var(--text-primary); font-weight: 500;">Virtual Try-On</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'store' %}" style="color: var(--text-primary); font-weight: 500;">Shop</a>
+                        <a class="nav-link" href="{% url 'wardrobe:dashboard' %}" style="color: var(--text-primary); font-weight: 500;">
+                            <i class="fas fa-tshirt"></i> Wardrobe
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dress_recommender:home' %}" style="color: var(--text-primary); font-weight: 500;">
+                            <i class="fas fa-cloud-sun"></i> Weather Dress
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'quick_shopping' %}" style="color: var(--text-primary); font-weight: 500;">Quick Shopping</a>
                     </li>
                 </ul>
                 
@@ -59,18 +69,33 @@
                     <div class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" style="color: var(--text-primary);">
                             <i class="fas fa-user"></i>
+                            {% if user.is_authenticated %}
+                                {{ user.first_name|default:user.username }}
+                            {% endif %}
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" style="background: var(--bg-light); border: 1px solid var(--border-light);">
-                            <a class="dropdown-item" href="#" style="color: var(--text-primary);">
-                                <i class="fas fa-sign-in-alt"></i> Sign In
-                            </a>
-                            <a class="dropdown-item" href="#" style="color: var(--text-primary);">
-                                <i class="fas fa-user-plus"></i> Register
-                            </a>
-                            <div class="dropdown-divider" style="border-color: var(--border-light);"></div>
-                            <a class="dropdown-item" href="#" style="color: var(--text-primary);">
-                                <i class="fas fa-heart"></i> Wishlist
-                            </a>
+                            {% if user.is_authenticated %}
+                                <a class="dropdown-item" href="{% url 'accounts:profile' %}" style="color: var(--text-primary);">
+                                    <i class="fas fa-user"></i> Profile
+                                </a>
+                                <a class="dropdown-item" href="{% url 'wardrobe:dashboard' %}" style="color: var(--text-primary);">
+                                    <i class="fas fa-tshirt"></i> My Wardrobe
+                                </a>
+                                <a class="dropdown-item" href="{% url 'wardrobe:generate_outfit' %}" style="color: var(--text-primary);">
+                                    <i class="fas fa-magic"></i> Smart Outfit Generator
+                                </a>
+                                <div class="dropdown-divider" style="border-color: var(--border-light);"></div>
+                                <a class="dropdown-item" href="{% url 'accounts:logout' %}" style="color: var(--text-primary);">
+                                    <i class="fas fa-sign-out-alt"></i> Sign Out
+                                </a>
+                            {% else %}
+                                <a class="dropdown-item" href="{% url 'accounts:login' %}" style="color: var(--text-primary);">
+                                    <i class="fas fa-sign-in-alt"></i> Sign In
+                                </a>
+                                <a class="dropdown-item" href="{% url 'accounts:register' %}" style="color: var(--text-primary);">
+                                    <i class="fas fa-user-plus"></i> Register
+                                </a>
+                            {% endif %}
                         </div>
                     </div>
                     
@@ -101,15 +126,21 @@
                 </a>
             </div>
             <div class="col">
-                <a href="{% url 'store' %}" class="text-decoration-none" style="color: var(--text-primary); font-size: 0.8rem;">
-                    <i class="fas fa-store d-block"></i>
-                    Shop
+                <a href="{% url 'quick_shopping' %}" class="text-decoration-none" style="color: var(--text-primary); font-size: 0.8rem;">
+                    <i class="fas fa-bolt d-block"></i>
+                    Quick Shop
                 </a>
             </div>
             <div class="col">
                 <a href="#vton-section" class="text-decoration-none" style="color: var(--text-primary); font-size: 0.8rem;">
                     <i class="fas fa-magic d-block"></i>
                     Try-On
+                </a>
+            </div>
+            <div class="col">
+                <a href="{% url 'wardrobe:dashboard' %}" class="text-decoration-none" style="color: var(--text-primary); font-size: 0.8rem;">
+                    <i class="fas fa-tshirt d-block"></i>
+                    Wardrobe
                 </a>
             </div>
             <div class="col">

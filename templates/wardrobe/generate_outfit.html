@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="section-content padding-y" style="min-height:84vh">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="fas fa-magic text-primary"></i> AI Outfit Generator
+                        </h4>
+                        <p class="text-muted mb-0">Let AI create perfect outfits from your wardrobe</p>
+                    </div>
+                    <div class="card-body">
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="close" data-dismiss="alert">
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <div class="row mb-4">
+                            <div class="col-md-4 text-center">
+                                <div class="p-3 bg-light rounded">
+                                    <i class="fas fa-tshirt fa-2x text-primary mb-2"></i>
+                                    <h5>{{ user_items_count }}</h5>
+                                    <small class="text-muted">Items in Wardrobe</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <div class="p-3 bg-light rounded">
+                                    <i class="fas fa-tags fa-2x text-success mb-2"></i>
+                                    <h5>{{ categories_available|length }}</h5>
+                                    <small class="text-muted">Categories Available</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <div class="p-3 bg-light rounded">
+                                    <i class="fas fa-brain fa-2x text-info mb-2"></i>
+                                    <h5>Smart</h5>
+                                    <small class="text-muted">Algorithm Styling</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form method="post" id="generateOutfitForm">
+                            {% csrf_token %}
+                            
+                            <div class="form-group">
+                                <label for="occasion">What's the occasion?</label>
+                                <select name="occasion" id="occasion" class="form-control" required>
+                                    <option value="">Select an occasion</option>
+                                    <option value="casual">Casual Day Out</option>
+                                    <option value="work">Work/Professional</option>
+                                    <option value="date">Date Night</option>
+                                    <option value="party">Party/Event</option>
+                                    <option value="formal">Formal Event</option>
+                                    <option value="workout">Workout/Gym</option>
+                                    <option value="travel">Travel</option>
+                                    <option value="home">Staying Home</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="season">Season/Weather</label>
+                                <select name="season" id="season" class="form-control" required>
+                                    <option value="">Select season</option>
+                                    {% for season_code, season_name in seasons %}
+                                        <option value="{{ season_code }}">{{ season_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="style_preference">Style Preference</label>
+                                <select name="style_preference" id="style_preference" class="form-control">
+                                    <option value="balanced">Balanced (Mix of styles)</option>
+                                    <option value="conservative">Conservative/Classic</option>
+                                    <option value="trendy">Trendy/Fashion Forward</option>
+                                    <option value="comfortable">Comfort First</option>
+                                    <option value="bold">Bold/Statement</option>
+                                    <option value="minimalist">Minimalist/Simple</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary btn-lg btn-block" id="generateBtn">
+                                    <i class="fas fa-magic"></i> Generate Smart Outfits
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="text-center mt-4">
+                            <p class="text-muted">
+                                <i class="fas fa-lightbulb"></i> 
+                                Smart algorithm will analyze your wardrobe and create 3 personalized outfit suggestions
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.getElementById('generateOutfitForm').addEventListener('submit', function(e) {
+    const btn = document.getElementById('generateBtn');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating Outfits...';
+    btn.disabled = true;
+});
+</script>
+{% endblock %}

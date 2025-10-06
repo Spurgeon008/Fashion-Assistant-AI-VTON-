@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- ========================= WARDROBE DASHBOARD ========================= -->
+<section class="wardrobe-dashboard" style="background: var(--bg-dark); padding: 80px 0; min-height: 80vh;">
+    <div class="container">
+        <!-- Header -->
+        <div class="dashboard-header text-center mb-5">
+            <h1 style="color: var(--text-primary); font-size: 2.5rem; font-weight: 700; margin-bottom: 15px;">
+                <i class="fas fa-tshirt"></i> 
+                {% if user.is_authenticated %}My Wardrobe{% else %}Digital Wardrobe{% endif %}
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">
+                {% if user.is_authenticated %}
+                    Organize, style, and track your fashion collection
+                {% else %}
+                    Store clothes you buy from our store and upload your own items
+                    <br><small><a href="{% url 'accounts:register' %}" style="color: var(--accent-color);">Sign up</a> to save your wardrobe permanently</small>
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Quick Stats -->
+        {% if user.is_authenticated and stats %}
+        <div class="row mb-5">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card" style="background: var(--bg-light); border-radius: var(--radius-large); padding: 30px; text-align: center; border: 1px solid var(--border-light);">
+                    <div class="stat-icon" style="width: 60px; height: 60px; background: var(--accent-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: white; font-size: 1.5rem;">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <h3 style="color: var(--text-primary); font-size: 2rem; font-weight: 700; margin-bottom: 5px;">{{ stats.total_items }}</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 0;">Total Items</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card" style="background: var(--bg-light); border-radius: var(--radius-large); padding: 30px; text-align: center; border: 1px solid var(--border-light);">
+                    <div class="stat-icon" style="width: 60px; height: 60px; background: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: white; font-size: 1.5rem;">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3 style="color: var(--text-primary); font-size: 2rem; font-weight: 700; margin-bottom: 5px;">{{ stats.total_outfits }}</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 0;">Saved Outfits</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card" style="background: var(--bg-light); border-radius: var(--radius-large); padding: 30px; text-align: center; border: 1px solid var(--border-light);">
+                    <div class="stat-icon" style="width: 60px; height: 60px; background: #ffc107; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: white; font-size: 1.5rem;">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <h3 style="color: var(--text-primary); font-size: 2rem; font-weight: 700; margin-bottom: 5px;">${{ stats.total_value|floatformat:0 }}</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 0;">Total Value</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card" style="background: var(--bg-light); border-radius: var(--radius-large); padding: 30px; text-align: center; border: 1px solid var(--border-light);">
+                    <div class="stat-icon" style="width: 60px; height: 60px; background: #e83e8c; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: white; font-size: 1.5rem;">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 style="color: var(--text-primary); font-size: 2rem; font-weight: 700; margin-bottom: 5px;">{{ favorite_items.count }}</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 0;">Favorites</p>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- Guest User Welcome -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="welcome-card" style="background: var(--bg-light); border-radius: var(--radius-large); padding: 40px; text-align: center; border: 1px solid var(--border-light);">
+                    <i class="fas fa-tshirt" style="font-size: 4rem; color: var(--accent-color); margin-bottom: 20px;"></i>
+                    <h3 style="color: var(--text-primary); margin-bottom: 15px;">Welcome to Your Digital Wardrobe!</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 25px;">
+                        Start building your digital wardrobe by adding clothes you buy from our store or uploading items you already own.
+                    </p>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <a href="{% url 'store' %}" class="btn btn-primary btn-lg btn-block">
+                                <i class="fas fa-shopping-bag"></i> Shop Now
+                            </a>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <a href="{% url 'accounts:register' %}" class="btn btn-outline-primary btn-lg btn-block">
+                                <i class="fas fa-user-plus"></i> Create Account
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Quick Actions -->
+        <div class="quick-actions mb-5">
+            <div class="row">
+                <div class="col-lg-4 mb-3">
+                    <a href="{% url 'wardrobe:add_item' %}" class="action-card" style="display: block; background: var(--bg-light); border-radius: var(--radius-large); padding: 25px; text-decoration: none; border: 1px solid var(--border-light); transition: all 0.3s ease;">
+                        <div class="d-flex align-items-center">
+                            <div class="action-icon" style="width: 50px; height: 50px; background: var(--accent-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; color: white;">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <div>
+                                <h5 style="color: var(--text-primary); margin-bottom: 5px;">Add New Item</h5>
+                                <p style="color: var(--text-secondary); margin-bottom: 0; font-size: 0.9rem;">Upload photos of your clothes</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="col-lg-4 mb-3">
+                    <a href="{% url 'wardrobe:generate_outfit' %}" class="action-card" style="display: block; background: var(--bg-light); border-radius: var(--radius-large); padding: 25px; text-decoration: none; border: 1px solid var(--border-light); transition: all 0.3s ease;">
+                        <div class="d-flex align-items-center">
+                            <div class="action-icon" style="width: 50px; height: 50px; background: #6f42c1; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; color: white;">
+                                <i class="fas fa-magic"></i>
+                            </div>
+                            <div>
+                                <h5 style="color: var(--text-primary); margin-bottom: 5px;">Generate Smart Outfit</h5>
+                                <p style="color: var(--text-secondary); margin-bottom: 0; font-size: 0.9rem;">Let smart algorithm create perfect outfits</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="col-lg-4 mb-3">
+                    <a href="{% url 'wardrobe:items' %}" class="action-card" style="display: block; background: var(--bg-light); border-radius: var(--radius-large); padding: 25px; text-decoration: none; border: 1px solid var(--border-light); transition: all 0.3s ease;">
+                        <div class="d-flex align-items-center">
+                            <div class="action-icon" style="width: 50px; height: 50px; background: #ffc107; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; color: white;">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div>
+                                <h5 style="color: var(--text-primary); margin-bottom: 5px;">Browse Items</h5>
+                                <p style="color: var(--text-secondary); margin-bottom: 0; font-size: 0.9rem;">View all your clothes</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Items -->
+        {% if recent_items %}
+        <div class="recent-items mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 style="color: var(--text-primary); font-weight: 600;">Recent Additions</h3>
+                <a href="{% url 'wardrobe:items' %}" style="color: var(--accent-color); text-decoration: none;">View All <i class="fas fa-arrow-right"></i></a>
+            </div>
+            
+            <div class="row">
+                {% for item in recent_items %}
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="wardrobe-item-card" style="background: var(--bg-light); border-radius: var(--radius-large); overflow: hidden; border: 1px solid var(--border-light); transition: all 0.3s ease;">
+                        <div class="item-image" style="position: relative; aspect-ratio: 1; background: var(--bg-section);">
+                            {% if item.image %}
+                                <img src="{{ item.image.url }}" alt="{{ item.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            {% else %}
+                                <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-light);">
+                                    <i class="fas fa-tshirt" style="font-size: 3rem;"></i>
+                                </div>
+                            {% endif %}
+                            
+                            {% if item.favorite %}
+                            <div class="favorite-badge" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-heart" style="color: #e83e8c; font-size: 0.9rem;"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="item-info" style="padding: 15px;">
+                            <h6 style="color: var(--text-primary); font-weight: 600; margin-bottom: 5px;">{{ item.name }}</h6>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 8px;">{{ item.get_category_display }}</p>
+                            {% if item.brand %}
+                            <small style="color: var(--text-light);">{{ item.brand }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Category Breakdown -->
+        {% if category_stats %}
+        <div class="category-breakdown">
+            <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 25px;">Wardrobe Breakdown</h3>
+            
+            <div class="row">
+                {% for category in category_stats %}
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-3">
+                    <div class="category-stat" style="background: var(--bg-light); border-radius: var(--radius-medium); padding: 20px; text-align: center; border: 1px solid var(--border-light);">
+                        <div style="color: var(--text-primary); font-size: 1.5rem; font-weight: 700; margin-bottom: 5px;">{{ category.count }}</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">{{ category.category|title }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.action-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-medium);
+    text-decoration: none;
+}
+
+.wardrobe-item-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-medium);
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-medium);
+}
+</style>
+
+{% endblock %}

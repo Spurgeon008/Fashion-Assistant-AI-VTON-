@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'store',
     'carts',
     'virtual_tryon',
+    'wardrobe',
+    'dress_recommender',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -78,6 +80,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'greatkart.wsgi.application'
 
 AUTH_USER_MODEL = 'accounts.Account'
+
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

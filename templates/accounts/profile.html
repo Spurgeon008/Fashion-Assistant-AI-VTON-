@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="section-content padding-y" style="min-height:84vh">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">My Profile</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                                <p><strong>Username:</strong> {{ user.username }}</p>
+                                <p><strong>Email:</strong> {{ user.email }}</p>
+                                {% if user.phone_number %}
+                                <p><strong>Phone:</strong> {{ user.phone_number }}</p>
+                                {% endif %}
+                                <p><strong>Member since:</strong> {{ user.date_joined|date:"F d, Y" }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-center">
+                                    <i class="fas fa-user-circle fa-5x text-muted mb-3"></i>
+                                    <div>
+                                        <a href="{% url 'wardrobe:dashboard' %}" class="btn btn-primary">
+                                            <i class="fas fa-tshirt"></i> View My Wardrobe
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

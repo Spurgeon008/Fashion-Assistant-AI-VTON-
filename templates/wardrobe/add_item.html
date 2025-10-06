@@ -1,0 +1,375 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- ========================= ADD WARDROBE ITEM ========================= -->
+<section class="add-item-section" style="background: var(--bg-dark); padding: 80px 0; min-height: 80vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Header -->
+                <div class="text-center mb-5">
+                    <h1 style="color: var(--text-primary); font-size: 2.5rem; font-weight: 700; margin-bottom: 15px;">
+                        <i class="fas fa-plus-circle"></i> Add New Item
+                    </h1>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem;">Add clothes from your personal collection to your digital wardrobe</p>
+                    
+                    <!-- Quick Tips -->
+                    <div class="row mt-4">
+                        <div class="col-md-4">
+                            <div class="tip-card" style="background: rgba(0, 122, 255, 0.1); border-radius: 12px; padding: 20px; margin-bottom: 15px;">
+                                <i class="fas fa-camera fa-2x" style="color: var(--accent-color); margin-bottom: 10px;"></i>
+                                <h6 style="color: var(--text-primary);">Clear Photos</h6>
+                                <small style="color: var(--text-secondary);">Take photos in good lighting with plain backgrounds</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="tip-card" style="background: rgba(40, 167, 69, 0.1); border-radius: 12px; padding: 20px; margin-bottom: 15px;">
+                                <i class="fas fa-tags fa-2x" style="color: #28a745; margin-bottom: 10px;"></i>
+                                <h6 style="color: var(--text-primary);">Add Details</h6>
+                                <small style="color: var(--text-secondary);">Include brand, color, and size for better organization</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="tip-card" style="background: rgba(255, 193, 7, 0.1); border-radius: 12px; padding: 20px; margin-bottom: 15px;">
+                                <i class="fas fa-magic fa-2x" style="color: #ffc107; margin-bottom: 10px;"></i>
+                                <h6 style="color: var(--text-primary);">AI Outfits</h6>
+                                <small style="color: var(--text-secondary);">More items = better AI outfit suggestions</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Card -->
+                <div class="form-card" style="background: var(--bg-light); border-radius: var(--radius-large); padding: 40px; border: 1px solid var(--border-light);">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Image Upload -->
+                        <div class="mb-4">
+                            <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 10px; display: block;">
+                                <i class="fas fa-camera"></i> Item Photo *
+                            </label>
+                            <div class="upload-area" id="uploadArea" style="border: 2px dashed var(--border-light); border-radius: var(--radius-medium); padding: 40px; text-align: center; background: var(--bg-dark); position: relative; cursor: pointer;">
+                                <div class="upload-content">
+                                    <div class="upload-icon" style="font-size: 3rem; color: var(--text-light); margin-bottom: 15px;">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <h6 style="color: var(--text-primary); margin-bottom: 8px;">Upload Item Photo</h6>
+                                    <p style="color: var(--text-secondary); margin-bottom: 15px;">Drop your image here or click to browse</p>
+                                    <div class="btn btn-outline-primary">
+                                        <i class="fas fa-plus"></i> Choose File
+                                    </div>
+                                </div>
+                                {{ form.image }}
+                            </div>
+                            <small style="color: var(--text-secondary); margin-top: 10px; display: block;">
+                                <i class="fas fa-info-circle"></i> Best results with clear, well-lit photos on a plain background. Supported formats: JPG, PNG, GIF
+                            </small>
+                        </div>
+
+                        <!-- Basic Information -->
+                        <div class="form-section mb-4">
+                            <h5 style="color: var(--text-primary); font-weight: 600; margin-bottom: 20px; border-bottom: 1px solid var(--border-light); padding-bottom: 10px;">
+                                <i class="fas fa-info-circle"></i> Basic Information
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px; display: block;">Item Name *</label>
+                                    {{ form.name }}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px; display: block;">Category *</label>
+                                    {{ form.category }}
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px; display: block;">Description</label>
+                                {{ form.description }}
+                            </div>
+                        </div>
+
+                        <!-- Details -->
+                        <div class="form-section mb-4">
+                            <h5 style="color: var(--text-primary); font-weight: 600; margin-bottom: 20px; border-bottom: 1px solid var(--border-light); padding-bottom: 10px;">
+                                <i class="fas fa-tags"></i> Item Details
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px; display: block;">Brand</label>
+                                    {{ form.brand }}
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px; display: block;">Color</label>
+                                    {{ form.color }}
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px; display: block;">Size</label>
+                                    {{ form.size }}
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px; display: block;">Season</label>
+                                    {{ form.season }}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px; display: block;">Tags</label>
+                                    {{ form.tags }}
+                                    <small style="color: var(--text-secondary); display: block; margin-top: 5px;">
+                                        Separate tags with commas (e.g., casual, work, party)
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Purchase Information -->
+                        <div class="form-section mb-4">
+                            <h5 style="color: var(--text-primary); font-weight: 600; margin-bottom: 20px; border-bottom: 1px solid var(--border-light); padding-bottom: 10px;">
+                                <i class="fas fa-receipt"></i> Purchase Information (Optional)
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px; display: block;">Purchase Date</label>
+                                    {{ form.purchase_date }}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px; display: block;">Purchase Price ($)</label>
+                                    {{ form.purchase_price }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions text-center">
+                            <button type="submit" class="btn btn-hero me-3" style="padding: 15px 40px; font-size: 1.1rem;">
+                                <i class="fas fa-plus"></i> Add to Wardrobe
+                            </button>
+                            <a href="{% url 'wardrobe:dashboard' %}" class="btn btn-hero-outline" style="padding: 13px 38px; font-size: 1.1rem;">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Form Styling */
+.form-control {
+    background: var(--bg-dark) !important;
+    border: 1px solid var(--border-light) !important;
+    color: var(--text-primary) !important;
+    border-radius: var(--radius-small) !important;
+    padding: 12px 15px !important;
+}
+
+.form-control:focus {
+    background: var(--bg-dark) !important;
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 122, 255, 0.25) !important;
+    color: var(--text-primary) !important;
+}
+
+.form-control::placeholder {
+    color: var(--text-secondary) !important;
+}
+
+select.form-control option {
+    background: var(--bg-dark) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Upload Area Styling */
+.upload-area {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+    border-color: var(--accent-color);
+    background: rgba(0, 122, 255, 0.05);
+}
+
+.upload-area input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Form Section Styling */
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.form-actions .btn:hover {
+    transform: translateY(-2px);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = uploadArea.querySelector('input[type="file"]');
+    
+    // Handle click on upload area
+    uploadArea.addEventListener('click', function() {
+        fileInput.click();
+    });
+    
+    // Handle drag and drop
+    uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        uploadArea.style.borderColor = 'var(--accent-color)';
+        uploadArea.style.backgroundColor = 'rgba(0, 122, 255, 0.05)';
+    });
+    
+    uploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        uploadArea.style.borderColor = 'var(--border-light)';
+        uploadArea.style.backgroundColor = 'var(--bg-dark)';
+    });
+    
+    uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        uploadArea.style.borderColor = 'var(--border-light)';
+        uploadArea.style.backgroundColor = 'var(--bg-dark)';
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            handleFileSelect(files[0]);
+        }
+    });
+    
+    // Handle file selection
+    fileInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+            handleFileSelect(this.files[0]);
+        }
+    });
+    
+    function handleFileSelect(file) {
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            alert('Please select an image file (JPG, PNG, GIF)');
+            return;
+        }
+        
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('File size must be less than 5MB');
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            uploadArea.innerHTML = `
+                <div class="upload-preview text-center">
+                    <img src="${e.target.result}" alt="Preview" style="max-width: 250px; max-height: 250px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <div style="color: var(--text-primary); margin-bottom: 10px;">
+                        <strong>${file.name}</strong>
+                        <br><small style="color: var(--text-secondary);">${(file.size / 1024 / 1024).toFixed(2)} MB</small>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-image">
+                        <i class="fas fa-times"></i> Remove Image
+                    </button>
+                    <input type="file" name="image" accept="image/*" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+                </div>
+            `;
+            
+            // Re-attach event listener for remove button
+            const removeBtn = uploadArea.querySelector('.remove-image');
+            removeBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                resetUploadArea();
+            });
+            
+            // Re-attach event listener for file input
+            const newFileInput = uploadArea.querySelector('input[type="file"]');
+            newFileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    handleFileSelect(this.files[0]);
+                }
+            });
+        };
+        reader.readAsDataURL(file);
+    }
+    
+    function resetUploadArea() {
+        uploadArea.innerHTML = `
+            <div class="upload-content">
+                <div class="upload-icon" style="font-size: 3rem; color: var(--text-light); margin-bottom: 15px;">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h6 style="color: var(--text-primary); margin-bottom: 8px;">Upload Item Photo</h6>
+                <p style="color: var(--text-secondary); margin-bottom: 15px;">Drop your image here or click to browse</p>
+                <div class="btn btn-outline-primary">
+                    <i class="fas fa-plus"></i> Choose File
+                </div>
+            </div>
+            <input type="file" name="image" accept="image/*" class="form-control" required style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+        `;
+        
+        // Re-attach event listeners
+        const newFileInput = uploadArea.querySelector('input[type="file"]');
+        newFileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                handleFileSelect(this.files[0]);
+            }
+        });
+    }
+    
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const nameInput = form.querySelector('input[name="name"]');
+        const categorySelect = form.querySelector('select[name="category"]');
+        const imageInput = form.querySelector('input[name="image"]');
+        
+        if (!nameInput.value.trim()) {
+            e.preventDefault();
+            alert('Please enter an item name');
+            nameInput.focus();
+            return;
+        }
+        
+        if (!categorySelect.value) {
+            e.preventDefault();
+            alert('Please select a category');
+            categorySelect.focus();
+            return;
+        }
+        
+        if (!imageInput.files.length) {
+            e.preventDefault();
+            alert('Please upload an image of the item');
+            return;
+        }
+        
+        // Show loading state
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding to Wardrobe...';
+        submitBtn.disabled = true;
+    });
+});
+</script>
+
+{% endblock %}

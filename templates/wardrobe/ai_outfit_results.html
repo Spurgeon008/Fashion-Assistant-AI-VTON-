@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="section-content padding-y" style="min-height:84vh">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h3><i class="fas fa-magic text-primary"></i> Smart Generated Outfits</h3>
+                        <p class="text-muted">Perfect combinations for {{ occasion }} in {{ season }}</p>
+                    </div>
+                    <a href="{% url 'wardrobe:generate_outfit' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-redo"></i> Generate New
+                    </a>
+                </div>
+
+                {% if outfit_suggestions %}
+                    <div class="row">
+                        {% for outfit in outfit_suggestions %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 outfit-card">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="card-title mb-0">{{ outfit.name }}</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">{{ outfit.description }}</p>
+                                    
+                                    <h6 class="font-weight-bold">Items in this outfit:</h6>
+                                    <div class="row">
+                                        {% for item in outfit.items %}
+                                        <div class="col-6 mb-2">
+                                            <div class="d-flex align-items-center">
+                                                {% if item.image %}
+                                                    <img src="{{ item.image.url }}" alt="{{ item.name }}" 
+                                                         class="rounded" style="width: 40px; height: 40px; object-fit: cover;">
+                                                {% else %}
+                                                    <div class="bg-light rounded d-flex align-items-center justify-content-center" 
+                                                         style="width: 40px; height: 40px;">
+                                                        <i class="fas fa-tshirt text-muted"></i>
+                                                    </div>
+                                                {% endif %}
+                                                <div class="ml-2">
+                                                    <small class="font-weight-bold">{{ item.name }}</small><br>
+                                                    <small class="text-muted">{{ item.get_category_display }}</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    
+                                    {% if outfit.style_notes %}
+                                    <div class="mt-3">
+                                        <h6 class="font-weight-bold">Style Notes:</h6>
+                                        <p class="small text-muted">{{ outfit.style_notes }}</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="card-footer">
+                                    <button class="btn btn-success btn-block save-outfit-btn" 
+                                            data-outfit-name="{{ outfit.name }}"
+                                            data-outfit-description="{{ outfit.description }}"
+                                            data-item-ids="{{ outfit.item_ids|join:',' }}"
+                                            data-occasion="{{ occasion }}"
+                                            data-season="{{ season }}">
+                                        <i class="fas fa-save"></i> Save to My Outfits
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                        <h4>No Outfits Generated</h4>
+                        <p class="text-muted">Unable to create outfit suggestions. Try adding more items to your wardrobe or try again.</p>
+                        <a href="{% url 'wardrobe:add_item' %}" class="btn btn-primary">Add More Items</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const saveButtons = document.querySelectorAll('.save-outfit-btn');
+    
+    saveButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const outfitName = this.dataset.outfitName;
+            const outfitDescription = this.dataset.outfitDescription;
+            const itemIds = this.dataset.itemIds.split(',');
+            const occasion = this.dataset.occasion;
+            const season = this.dataset.season;
+            
+            // Disable button and show loading
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            this.disabled = true;
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+            formData.append('outfit_name', outfitName);
+            formData.append('outfit_description', outfitDescription);
+            formData.append('occasion', occasion);
+            formData.append('season', season);
+            
+            itemIds.forEach(id => {
+                formData.append('item_ids', id);
+            });
+            
+            // Send request
+            fetch('{% url "wardrobe:save_ai_outfit" %}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.innerHTML = '<i class="fas fa-check"></i> Saved!';
+                    this.classList.remove('btn-success');
+                    this.classList.add('btn-secondary');
+                    
+                    // Show success message
+                    const alert = document.createElement('div');
+                    alert.className = 'alert alert-success alert-dismissible fade show';
+                    alert.innerHTML = `
+                        Outfit "${outfitName}" has been saved to your collection!
+                        <button type="button" class="close" data-dismiss="alert">
+                            <span>&times;</span>
+                        </button>
+                    `;
+                    document.querySelector('.container').insertBefore(alert, document.querySelector('.row'));
+                } else {
+                    this.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error';
+                    this.classList.remove('btn-success');
+                    this.classList.add('btn-danger');
+                    this.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                this.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error';
+                this.classList.remove('btn-success');
+                this.classList.add('btn-danger');
+                this.disabled = false;
+            });
+        });
+    });
+});
+
+// Add CSRF token to all requests
+const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+if (!csrfToken) {
+    // Create hidden CSRF token input if it doesn't exist
+    const tokenInput = document.createElement('input');
+    tokenInput.type = 'hidden';
+    tokenInput.name = 'csrfmiddlewaretoken';
+    tokenInput.value = '{{ csrf_token }}';
+    document.body.appendChild(tokenInput);
+}
+</script>
+{% endblock %}

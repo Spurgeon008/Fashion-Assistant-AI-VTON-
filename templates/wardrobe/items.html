@@ -1,0 +1,323 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- ========================= WARDROBE ITEMS ========================= -->
+<section class="wardrobe-items" style="background: var(--bg-dark); padding: 80px 0; min-height: 80vh;">
+    <div class="container">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 style="color: var(--text-primary); font-size: 2.5rem; font-weight: 700; margin-bottom: 10px;">
+                    <i class="fas fa-tshirt"></i> My Items
+                </h1>
+                <p style="color: var(--text-secondary); margin-bottom: 0;">{{ page_obj.paginator.count }} items in your wardrobe</p>
+            </div>
+            <a href="{% url 'wardrobe:add_item' %}" class="btn btn-hero">
+                <i class="fas fa-plus"></i> Add New Item
+            </a>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-card mb-4" style="background: var(--bg-light); border-radius: var(--radius-large); padding: 25px; border: 1px solid var(--border-light);">
+            <form method="get" class="row align-items-end">
+                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                    <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px; display: block;">Category</label>
+                    <select name="category" class="form-control">
+                        <option value="">All Categories</option>
+                        {% for value, label in categories %}
+                        <option value="{{ value }}" {% if current_filters.category == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                    <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px; display: block;">Season</label>
+                    <select name="season" class="form-control">
+                        <option value="">All Seasons</option>
+                        {% for value, label in seasons %}
+                        <option value="{{ value }}" {% if current_filters.season == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                    <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px; display: block;">Source</label>
+                    <select name="source" class="form-control">
+                        <option value="">All Sources</option>
+                        {% for value, label in sources %}
+                        <option value="{{ value }}" {% if current_filters.source == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <label style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px; display: block;">Search</label>
+                    <input type="text" name="search" class="form-control" placeholder="Search by name, brand, color, or tags..." value="{{ current_filters.search }}">
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-3">
+                    <button type="submit" class="btn btn-hero w-100">
+                        <i class="fas fa-search"></i> Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Items Grid -->
+        {% if page_obj %}
+        <div class="items-grid">
+            <div class="row">
+                {% for item in page_obj %}
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="wardrobe-item-card" style="background: var(--bg-light); border-radius: var(--radius-large); overflow: hidden; border: 1px solid var(--border-light); transition: all 0.3s ease; position: relative;">
+                        <!-- Item Image -->
+                        <div class="item-image" style="position: relative; aspect-ratio: 1; background: var(--bg-section);">
+                            {% if item.image %}
+                                <img src="{{ item.image.url }}" alt="{{ item.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            {% else %}
+                                <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-light);">
+                                    <i class="fas fa-tshirt" style="font-size: 3rem;"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <!-- Badges -->
+                            <div class="item-badges" style="position: absolute; top: 10px; left: 10px;">
+                                {% if item.source == 'store_purchase' %}
+                                <span class="badge" style="background: var(--accent-color); color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.7rem; margin-right: 5px;">
+                                    <i class="fas fa-store"></i> Store
+                                </span>
+                                {% endif %}
+                                
+                                {% if item.favorite %}
+                                <span class="badge" style="background: #e83e8c; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.7rem;">
+                                    <i class="fas fa-heart"></i>
+                                </span>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Quick Actions -->
+                            <div class="item-actions" style="position: absolute; top: 10px; right: 10px; opacity: 0; transition: all 0.3s ease;">
+                                <button class="btn btn-sm favorite-btn" data-item-id="{{ item.id }}" style="background: rgba(0,0,0,0.7); border: none; color: white; border-radius: 50%; width: 35px; height: 35px; margin-bottom: 5px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-heart{% if not item.favorite %}-o{% endif %}"></i>
+                                </button>
+                                <button class="btn btn-sm worn-btn" data-item-id="{{ item.id }}" style="background: rgba(0,0,0,0.7); border: none; color: white; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Item Info -->
+                        <div class="item-info" style="padding: 20px;">
+                            <h6 style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px;">
+                                <a href="{% url 'wardrobe:item_detail' item.id %}" style="color: var(--text-primary); text-decoration: none;">
+                                    {{ item.name }}
+                                </a>
+                            </h6>
+                            
+                            <div class="item-details mb-2">
+                                <small style="color: var(--text-secondary); display: block;">{{ item.get_category_display }}</small>
+                                {% if item.brand %}
+                                <small style="color: var(--text-light);">{{ item.brand }}</small>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="item-meta d-flex justify-content-between align-items-center">
+                                <div class="item-stats">
+                                    {% if item.times_worn > 0 %}
+                                    <small style="color: var(--text-secondary);">
+                                        <i class="fas fa-eye"></i> {{ item.times_worn }} time{{ item.times_worn|pluralize }}
+                                    </small>
+                                    {% else %}
+                                    <small style="color: var(--text-light);">Never worn</small>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="item-colors">
+                                    {% if item.color %}
+                                    <small style="color: var(--text-secondary);">{{ item.color }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            {% if item.tags %}
+                            <div class="item-tags mt-2">
+                                {% for tag in item.get_tags_list %}
+                                {% if forloop.counter <= 3 %}
+                                <span class="tag" style="background: var(--bg-section); color: var(--text-secondary); padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; margin-right: 5px;">
+                                    {{ tag }}
+                                </span>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination-wrapper text-center mt-5">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center" style="margin-bottom: 0;">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.season %}&season={{ request.GET.season }}{% endif %}{% if request.GET.source %}&source={{ request.GET.source }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" style="background: var(--bg-light); border: 1px solid var(--border-light); color: var(--text-primary);">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link" style="background: var(--accent-color); border: 1px solid var(--accent-color); color: white;">{{ num }}</span>
+                    </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.season %}&season={{ request.GET.season }}{% endif %}{% if request.GET.source %}&source={{ request.GET.source }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" style="background: var(--bg-light); border: 1px solid var(--border-light); color: var(--text-primary);">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.season %}&season={{ request.GET.season }}{% endif %}{% if request.GET.source %}&source={{ request.GET.source }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" style="background: var(--bg-light); border: 1px solid var(--border-light); color: var(--text-primary);">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="empty-state text-center" style="background: var(--bg-light); border-radius: var(--radius-large); padding: 60px 40px; border: 1px solid var(--border-light);">
+            <i class="fas fa-tshirt" style="font-size: 4rem; color: var(--text-light); margin-bottom: 20px;"></i>
+            <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 15px;">No items found</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 30px;">
+                {% if current_filters.search or current_filters.category or current_filters.season or current_filters.source %}
+                Try adjusting your filters or search terms.
+                {% else %}
+                Start building your digital wardrobe by adding your first item!
+                {% endif %}
+            </p>
+            <a href="{% url 'wardrobe:add_item' %}" class="btn btn-hero">
+                <i class="fas fa-plus"></i> Add Your First Item
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+/* Form Styling */
+.form-control {
+    background: var(--bg-dark) !important;
+    border: 1px solid var(--border-light) !important;
+    color: var(--text-primary) !important;
+    border-radius: var(--radius-small) !important;
+    padding: 10px 12px !important;
+}
+
+.form-control:focus {
+    background: var(--bg-dark) !important;
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 122, 255, 0.25) !important;
+    color: var(--text-primary) !important;
+}
+
+select.form-control option {
+    background: var(--bg-dark) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Item Card Hover Effects */
+.wardrobe-item-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+}
+
+.wardrobe-item-card:hover .item-actions {
+    opacity: 1;
+}
+
+.item-info a:hover {
+    color: var(--accent-color) !important;
+}
+
+/* Button Hover Effects */
+.favorite-btn:hover,
+.worn-btn:hover {
+    background: var(--accent-color) !important;
+    transform: scale(1.1);
+}
+
+/* Pagination Styling */
+.page-link:hover {
+    background: var(--accent-color) !important;
+    border-color: var(--accent-color) !important;
+    color: white !important;
+}
+</style>
+
+<script>
+$(document).ready(function() {
+    // Handle favorite toggle
+    $('.favorite-btn').on('click', function(e) {
+        e.preventDefault();
+        const itemId = $(this).data('item-id');
+        const button = $(this);
+        
+        $.post(`/wardrobe/items/${itemId}/toggle-favorite/`, {
+            'csrfmiddlewaretoken': $('[name=csrfmiddlewaretoken]').val()
+        })
+        .done(function(data) {
+            if (data.success) {
+                const icon = button.find('i');
+                if (data.favorite) {
+                    icon.removeClass('fa-heart-o').addClass('fa-heart');
+                    button.closest('.wardrobe-item-card').find('.item-badges').append(
+                        '<span class="badge" style="background: #e83e8c; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.7rem;"><i class="fas fa-heart"></i></span>'
+                    );
+                } else {
+                    icon.removeClass('fa-heart').addClass('fa-heart-o');
+                    button.closest('.wardrobe-item-card').find('.item-badges .badge:contains("♥")').remove();
+                }
+            }
+        });
+    });
+    
+    // Handle mark as worn
+    $('.worn-btn').on('click', function(e) {
+        e.preventDefault();
+        const itemId = $(this).data('item-id');
+        const button = $(this);
+        
+        $.post(`/wardrobe/items/${itemId}/mark-worn/`, {
+            'csrfmiddlewaretoken': $('[name=csrfmiddlewaretoken]').val()
+        })
+        .done(function(data) {
+            if (data.success) {
+                // Update the times worn display
+                const statsElement = button.closest('.wardrobe-item-card').find('.item-stats small');
+                statsElement.html(`<i class="fas fa-eye"></i> ${data.times_worn} time${data.times_worn > 1 ? 's' : ''}`);
+                
+                // Show feedback
+                button.html('<i class="fas fa-check"></i>');
+                setTimeout(() => {
+                    button.html('<i class="fas fa-check"></i>');
+                }, 1000);
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}
