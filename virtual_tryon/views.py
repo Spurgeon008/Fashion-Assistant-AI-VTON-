@@ -9,6 +9,8 @@ from django.conf import settings
 import tempfile
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from PIL import Image
+import io
 
 # Test import at module level to catch issues early
 try:
@@ -25,6 +27,31 @@ def _get_mime_type(file_path):
     if mime_type is None:
         raise ValueError(f"Could not determine MIME type for {file_path}")
     return mime_type
+
+def _resize_image_if_needed(image_path, max_dimension=2048):
+    """Resize image if it's too large, to avoid API issues"""
+    try:
+        with Image.open(image_path) as img:
+            width, height = img.size
+            
+            # Check if resizing is needed
+            if width <= max_dimension and height <= max_dimension:
+                return  # No resize needed
+            
+            # Calculate new dimensions maintaining aspect ratio
+            if width > height:
+                new_width = max_dimension
+                new_height = int(height * (max_dimension / width))
+            else:
+                new_height = max_dimension
+                new_width = int(width * (max_dimension / height))
+            
+            # Resize and save
+            img_resized = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+            img_resized.save(image_path, quality=85, optimize=True)
+            print(f"DEBUG: Resized image from {width}x{height} to {new_width}x{new_height}")
+    except Exception as e:
+        print(f"WARNING: Could not resize image: {e}")
 
 def _load_image_parts(image_paths):
     """Loads image files and converts them into GenAI Part objects."""
@@ -117,17 +144,35 @@ def generate_vton(request):
         if not person_image or not cloth_image:
             return JsonResponse({'error': 'Both person_image and cloth_image are required'}, status=400)
         
+        # Validate image sizes (max 10MB each)
+        MAX_SIZE = 10 * 1024 * 1024  # 10MB
+        if person_image.size > MAX_SIZE:
+            return JsonResponse({'error': f'Person image too large. Max size: 10MB, got: {person_image.size / 1024 / 1024:.1f}MB'}, status=400)
+        if cloth_image.size > MAX_SIZE:
+            return JsonResponse({'error': f'Cloth image too large. Max size: 10MB, got: {cloth_image.size / 1024 / 1024:.1f}MB'}, status=400)
+        
+        print(f"DEBUG: Person image: {person_image.name}, size: {person_image.size} bytes")
+        print(f"DEBUG: Cloth image: {cloth_image.name}, size: {cloth_image.size} bytes")
+        
         # Create temporary files for processing
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as person_temp:
+        # Use the original file extension if possible
+        person_ext = os.path.splitext(person_image.name)[1] or '.jpg'
+        cloth_ext = os.path.splitext(cloth_image.name)[1] or '.jpg'
+        
+        with tempfile.NamedTemporaryFile(delete=False, suffix=person_ext) as person_temp:
             person_temp.write(person_image.read())
             person_temp_path = person_temp.name
             
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as cloth_temp:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=cloth_ext) as cloth_temp:
             cloth_temp.write(cloth_image.read())
             cloth_temp_path = cloth_temp.name
         
-        # Use the exact prompt from working implementation
-        prompt = "Combine the subjects of these images in a natural way, producing a new image."
+        # Resize images if they're too large
+        _resize_image_if_needed(person_temp_path)
+        _resize_image_if_needed(cloth_temp_path)
+        
+        # Use prompt from settings (can be customized in settings.py)
+        prompt = getattr(settings, 'VTON_DEFAULT_PROMPT', "Combine the subjects of these images in a natural way, producing a new image.")
         
         # Generate the VTON image
         image_paths = [person_temp_path, cloth_temp_path]
@@ -169,6 +214,22 @@ def generate_vton(request):
             os.unlink(cloth_temp_path)
         except:
             pass
-            
+        
+        # Log the full error for debugging
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"ERROR: VTON generation failed")
+        print(error_details)
+        
         # Return more detailed error information for debugging
-        return JsonResponse({'error': f'VTON generation failed: {str(e)}'}, status=500)
+        error_message = str(e)
+        
+        # Check for common API errors
+        if "500 INTERNAL" in error_message:
+            error_message = "Gemini API returned an internal error. This could be due to: image content, size, or temporary API issues. Try with different images or try again later."
+        elif "quota" in error_message.lower():
+            error_message = "API quota exceeded. Check your Gemini API usage limits."
+        elif "invalid" in error_message.lower() and "key" in error_message.lower():
+            error_message = "Invalid API key. Please check your GEMINI_API_KEY in settings.py"
+        
+        return JsonResponse({'error': f'VTON generation failed: {error_message}'}, status=500)

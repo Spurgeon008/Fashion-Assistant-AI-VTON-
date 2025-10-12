@@ -132,6 +132,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
+VTON_DEFAULT_PROMPT = "Combine the subjects of these images in a natural way, producing a new image."
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -139,4 +140,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Google Generative AI API Key
 # Replace the empty string below with your actual Gemini API key
 # You can get one from: https://aistudio.google.com/app/apikey
-GEMINI_API_KEY = 'place_holder'  # Paste your actual API key here
+GEMINI_API_KEY = ''  # Paste your actual API key here

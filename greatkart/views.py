@@ -7,3 +7,4 @@ def home(request):
         'products':products,
     }
     return render(request,'home.html',context)
+    prompt = getattr(settings, 'VTON_DEFAULT_PROMPT', "Combine the subjects of these images in a natural way, producing a new image.")

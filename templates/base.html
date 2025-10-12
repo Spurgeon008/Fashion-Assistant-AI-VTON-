@@ -25,6 +25,7 @@
 <!-- custom style -->
 <link href="{% static 'css/ui.css' %}" rel="stylesheet" type="text/css"/>
 <link href="{% static 'css/responsive.css' %}" rel="stylesheet" media="only screen and (max-width: 1200px)" />
+<link href="{% static 'css/custom.css' %}" rel="stylesheet" type="text/css"/>
 
 <!-- custom javascript -->
 <script src="{% static 'js/script.js' %}" type="text/javascript"></script>
@@ -55,6 +56,9 @@ $(document).ready(function() {
 <!-- Virtual Try-On JavaScript -->
 <script>
 $(document).ready(function() {
+    // Store the generated image data for download
+    var generatedImageData = null;
+    
     // Handle Image VTon form submission
     $('#image-vton-form').on('submit', function(e) {
         e.preventDefault();
@@ -91,6 +95,9 @@ $(document).ready(function() {
                 console.log('VTON Response:', response);
                 if (response.success) {
                     if (response.image_data) {
+                        // Store image data for download
+                        generatedImageData = response.image_data;
+                        
                         // Display the generated image
                         $('#image-vton-result').show();
                         $('#image-vton-output').attr('src', 'data:image/jpeg;base64,' + response.image_data);
@@ -131,6 +138,26 @@ $(document).ready(function() {
                 submitButton.text(originalText).prop('disabled', false);
             }
         });
+    });
+    
+    // Handle download button click
+    $('#download-vton-btn').on('click', function() {
+        if (!generatedImageData) {
+            alert('No image to download. Please generate an image first.');
+            return;
+        }
+        
+        // Create a download link
+        var link = document.createElement('a');
+        link.href = 'data:image/jpeg;base64,' + generatedImageData;
+        link.download = 'virtual-tryon-' + Date.now() + '.jpg';
+        
+        // Trigger download
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        console.log('Image downloaded successfully');
     });
     
     // Handle Video VTon form submission
