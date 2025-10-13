@@ -1,0 +1,399 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content padding-y bg-light">
+    <div class="container">
+        
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="font-weight-bold">
+                    <i class="fas fa-user-circle mr-2 text-primary"></i> My Profile
+                </h2>
+                <p class="text-muted">Manage your account information and VTON images</p>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="row">
+            <!-- Sidebar -->
+            <aside class="col-lg-3 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <!-- Profile Picture -->
+                        <div class="profile-picture-container mb-3">
+                            {% if user.profile_picture %}
+                                <img src="{{ user.profile_picture.url }}" class="profile-picture" alt="Profile">
+                            {% else %}
+                                <div class="profile-picture-placeholder">
+                                    <i class="fas fa-user fa-4x text-muted"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <h5 class="font-weight-bold mb-1">{{ user.first_name }} {{ user.last_name }}</h5>
+                        <p class="text-muted small mb-3">@{{ user.username }}</p>
+                        
+                        <!-- Quick Stats -->
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-calendar-alt text-primary"></i>
+                                <small class="d-block text-muted">Member since</small>
+                                <strong>{{ user.date_joined|date:"M Y" }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Navigation -->
+                    <div class="list-group list-group-flush">
+                        <a href="#personal-info" class="list-group-item list-group-item-action active" data-toggle="tab">
+                            <i class="fas fa-user mr-2"></i> Personal Info
+                        </a>
+                        <a href="#vton-images" class="list-group-item list-group-item-action" data-toggle="tab">
+                            <i class="fas fa-images mr-2"></i> VTON Images
+                        </a>
+                        <a href="#address" class="list-group-item list-group-item-action" data-toggle="tab">
+                            <i class="fas fa-map-marker-alt mr-2"></i> Address
+                        </a>
+                        <a href="#security" class="list-group-item list-group-item-action" data-toggle="tab">
+                            <i class="fas fa-lock mr-2"></i> Security
+                        </a>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="col-lg-9">
+                <form method="POST" enctype="multipart/form-data" id="profileForm">
+                    {% csrf_token %}
+                    
+                    <div class="tab-content">
+                        <!-- Personal Info Tab -->
+                        <div class="tab-pane fade show active" id="personal-info">
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header bg-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-user mr-2 text-primary"></i> Personal Information
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <!-- First Name -->
+                                        <div class="col-md-6 mb-3">
+                                            <label class="font-weight-bold">First Name</label>
+                                            <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}" required>
+                                        </div>
+                                        
+                                        <!-- Last Name -->
+                                        <div class="col-md-6 mb-3">
+                                            <label class="font-weight-bold">Last Name</label>
+                                            <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Email (Read-only) -->
+                                    <div class="mb-3">
+                                        <label class="font-weight-bold">Email Address</label>
+                                        <input type="email" class="form-control" value="{{ user.email }}" readonly>
+                                        <small class="form-text text-muted">Email cannot be changed</small>
+                                    </div>
+                                    
+                                    <!-- Username (Read-only) -->
+                                    <div class="mb-3">
+                                        <label class="font-weight-bold">Username</label>
+                                        <input type="text" class="form-control" value="{{ user.username }}" readonly>
+                                        <small class="form-text text-muted">Username cannot be changed</small>
+                                    </div>
+                                    
+                                    <!-- Phone Number -->
+                                    <div class="mb-3">
+                                        <label class="font-weight-bold">Phone Number</label>
+                                        <input type="tel" class="form-control" name="phone_number" value="{{ user.phone_number }}" placeholder="+1 (234) 567-8900">
+                                    </div>
+                                    
+                                    <!-- Profile Picture -->
+                                    <div class="mb-3">
+                                        <label class="font-weight-bold">Profile Picture</label>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="profile_picture" name="profile_picture" accept="image/*">
+                                            <label class="custom-file-label" for="profile_picture">Choose file...</label>
+                                        </div>
+                                        {% if user.profile_picture %}
+                                        <small class="form-text text-success">
+                                            <i class="fas fa-check-circle"></i> Current: {{ user.profile_picture.name }}
+                                        </small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- VTON Images Tab -->
+                        <div class="tab-pane fade" id="vton-images">
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header bg-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-images mr-2 text-primary"></i> Virtual Try-On Images
+                                    </h5>
+                                    <small class="text-muted">Upload your images for better virtual try-on experience</small>
+                                </div>
+                                <div class="card-body">
+                                    
+                                    <!-- Face Image -->
+                                    <div class="vton-image-section mb-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-4">
+                                                <div class="vton-image-preview">
+                                                    {% if user.face_image %}
+                                                        <img src="{{ user.face_image.url }}" alt="Face" class="img-fluid rounded">
+                                                    {% else %}
+                                                        <div class="vton-placeholder">
+                                                            <i class="fas fa-user-circle fa-4x text-muted"></i>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <h6 class="font-weight-bold">
+                                                    <i class="fas fa-smile mr-2 text-primary"></i> Face Image
+                                                </h6>
+                                                <p class="text-muted small mb-3">
+                                                    Close-up image of your face for accessories and facial features try-on.
+                                                    <br><strong>Tips:</strong> Clear, well-lit, front-facing photo
+                                                </p>
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" id="face_image" name="face_image" accept="image/*">
+                                                    <label class="custom-file-label" for="face_image">Choose face image...</label>
+                                                </div>
+                                                {% if user.face_image %}
+                                                <small class="form-text text-success mt-2">
+                                                    <i class="fas fa-check-circle"></i> Image uploaded
+                                                </small>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr>
+
+                                    <!-- Upper Body Image -->
+                                    <div class="vton-image-section mb-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-4">
+                                                <div class="vton-image-preview">
+                                                    {% if user.upper_body_image %}
+                                                        <img src="{{ user.upper_body_image.url }}" alt="Upper Body" class="img-fluid rounded">
+                                                    {% else %}
+                                                        <div class="vton-placeholder">
+                                                            <i class="fas fa-tshirt fa-4x text-muted"></i>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <h6 class="font-weight-bold">
+                                                    <i class="fas fa-tshirt mr-2 text-primary"></i> Upper Body Image
+                                                </h6>
+                                                <p class="text-muted small mb-3">
+                                                    Upper body image for trying on shirts, tops, jackets, and accessories.
+                                                    <br><strong>Tips:</strong> Stand straight, arms slightly away from body, plain background
+                                                </p>
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" id="upper_body_image" name="upper_body_image" accept="image/*">
+                                                    <label class="custom-file-label" for="upper_body_image">Choose upper body image...</label>
+                                                </div>
+                                                {% if user.upper_body_image %}
+                                                <small class="form-text text-success mt-2">
+                                                    <i class="fas fa-check-circle"></i> Image uploaded
+                                                </small>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr>
+
+                                    <!-- Full Body Image -->
+                                    <div class="vton-image-section mb-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-4">
+                                                <div class="vton-image-preview">
+                                                    {% if user.full_body_image %}
+                                                        <img src="{{ user.full_body_image.url }}" alt="Full Body" class="img-fluid rounded">
+                                                    {% else %}
+                                                        <div class="vton-placeholder">
+                                                            <i class="fas fa-male fa-4x text-muted"></i>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <h6 class="font-weight-bold">
+                                                    <i class="fas fa-male mr-2 text-primary"></i> Full Body Image
+                                                </h6>
+                                                <p class="text-muted small mb-3">
+                                                    Full body image for trying on pants, shoes, dresses, and complete outfits.
+                                                    <br><strong>Tips:</strong> Full body visible, standing straight, plain background, good lighting
+                                                </p>
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" id="full_body_image" name="full_body_image" accept="image/*">
+                                                    <label class="custom-file-label" for="full_body_image">Choose full body image...</label>
+                                                </div>
+                                                {% if user.full_body_image %}
+                                                <small class="form-text text-success mt-2">
+                                                    <i class="fas fa-check-circle"></i> Image uploaded
+                                                </small>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Image Guidelines -->
+                                    <div class="alert alert-info">
+                                        <h6 class="font-weight-bold">
+                                            <i class="fas fa-info-circle mr-2"></i> Image Guidelines
+                                        </h6>
+                                        <ul class="mb-0 small">
+                                            <li>Use high-quality, clear images</li>
+                                            <li>Ensure good lighting (natural light preferred)</li>
+                                            <li>Use plain, solid-colored backgrounds</li>
+                                            <li>Stand straight and face the camera</li>
+                                            <li>Wear fitted clothing for better results</li>
+                                            <li>Supported formats: JPG, PNG (max 10MB)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Address Tab -->
+                        <div class="tab-pane fade" id="address">
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header bg-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-map-marker-alt mr-2 text-primary"></i> Shipping Address
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Address Line 1 -->
+                                    <div class="mb-3">
+                                        <label class="font-weight-bold">Address Line 1</label>
+                                        <input type="text" class="form-control" name="address_line_1" value="{{ user.address_line_1 }}" placeholder="Street address, P.O. box">
+                                    </div>
+                                    
+                                    <!-- Address Line 2 -->
+                                    <div class="mb-3">
+                                        <label class="font-weight-bold">Address Line 2 (Optional)</label>
+                                        <input type="text" class="form-control" name="address_line_2" value="{{ user.address_line_2 }}" placeholder="Apartment, suite, unit, building, floor, etc.">
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <!-- City -->
+                                        <div class="col-md-6 mb-3">
+                                            <label class="font-weight-bold">City</label>
+                                            <input type="text" class="form-control" name="city" value="{{ user.city }}">
+                                        </div>
+                                        
+                                        <!-- State -->
+                                        <div class="col-md-6 mb-3">
+                                            <label class="font-weight-bold">State/Province</label>
+                                            <input type="text" class="form-control" name="state" value="{{ user.state }}">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <!-- Country -->
+                                        <div class="col-md-6 mb-3">
+                                            <label class="font-weight-bold">Country</label>
+                                            <input type="text" class="form-control" name="country" value="{{ user.country }}">
+                                        </div>
+                                        
+                                        <!-- Postal Code -->
+                                        <div class="col-md-6 mb-3">
+                                            <label class="font-weight-bold">Postal/Zip Code</label>
+                                            <input type="text" class="form-control" name="postal_code" value="{{ user.postal_code }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Security Tab -->
+                        <div class="tab-pane fade" id="security">
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header bg-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-lock mr-2 text-primary"></i> Security Settings
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle mr-2"></i>
+                                        Password change functionality coming soon!
+                                    </div>
+                                    
+                                    <h6 class="font-weight-bold mb-3">Account Security</h6>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <i class="fas fa-check-circle text-success mr-2"></i>
+                                            Email verified
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-check-circle text-success mr-2"></i>
+                                            Account active
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-clock text-muted mr-2"></i>
+                                            Last login: {{ user.last_login|date:"M d, Y H:i" }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Save Button -->
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-primary btn-lg px-5">
+                            <i class="fas fa-save mr-2"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            </main>
+        </div>
+    </div>
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+<script>
+$(document).ready(function() {
+    // Update file input labels
+    $('.custom-file-input').on('change', function() {
+        var fileName = $(this).val().split('\\').pop();
+        $(this).next('.custom-file-label').html(fileName);
+    });
+    
+    // Form submission
+    $('#profileForm').on('submit', function() {
+        var btn = $(this).find('button[type="submit"]');
+        btn.prop('disabled', true);
+        btn.html('<i class="fas fa-spinner fa-spin mr-2"></i> Saving...');
+    });
+});
+</script>
+
+{% endblock %}

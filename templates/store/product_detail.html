@@ -208,36 +208,335 @@
 
     <br>
     
-    <div class="row">
-                <div class="col-md-9">
-    
-        <header class="section-heading">
-            <h3>Customer Reviews </h3>  
-            
-        </header>
-    
-        <article class="box mb-3">
-            <div class="icontext w-100">
-                <img src="./images/avatars/avatar1.jpg" class="img-xs icon rounded-circle">
-                <div class="text">
-                    <span class="date text-muted float-md-right">24.04.2020 </span>  
-                    <h6 class="mb-1">Mike John </h6>
-                    
+    <!-- ============================ REVIEWS SECTION ================================= -->
+    <div class="card">
+        <div class="card-header bg-light">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h4 class="mb-0">
+                        <i class="fas fa-comments mr-2 text-primary"></i> Customer Reviews
+                    </h4>
                 </div>
-            </div> <!-- icontext.// -->
-            <div class="mt-3">
-                <p>
-                    Dummy comment Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                    quis nostrud exercitation ullamco laboris nisi ut aliquip
-                </p>	
+                <div class="col-md-6 text-md-right">
+                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#reviewModal">
+                        <i class="fas fa-pen mr-1"></i> Write a Review
+                    </button>
+                </div>
             </div>
-        </article>
-    
+        </div>
         
+        <div class="card-body">
+            <!-- Overall Rating Summary -->
+            <div class="row mb-4 pb-4 border-bottom">
+                <div class="col-md-4 text-center">
+                    <div class="rating-summary">
+                        <h1 class="display-3 font-weight-bold text-primary mb-0">4.0</h1>
+                        <div class="rating-stars mb-2">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="far fa-star text-warning"></i>
+                        </div>
+                        <p class="text-muted mb-0">Based on 128 reviews</p>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="rating-breakdown">
+                        <!-- 5 Stars -->
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="rating-label">5 <i class="fas fa-star text-warning"></i></span>
+                            <div class="progress flex-grow-1 mx-3">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <span class="rating-count">83</span>
+                        </div>
+                        <!-- 4 Stars -->
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="rating-label">4 <i class="fas fa-star text-warning"></i></span>
+                            <div class="progress flex-grow-1 mx-3">
+                                <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <span class="rating-count">26</span>
+                        </div>
+                        <!-- 3 Stars -->
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="rating-label">3 <i class="fas fa-star text-warning"></i></span>
+                            <div class="progress flex-grow-1 mx-3">
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <span class="rating-count">13</span>
+                        </div>
+                        <!-- 2 Stars -->
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="rating-label">2 <i class="fas fa-star text-warning"></i></span>
+                            <div class="progress flex-grow-1 mx-3">
+                                <div class="progress-bar bg-orange" role="progressbar" style="width: 3%" aria-valuenow="3" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <span class="rating-count">4</span>
+                        </div>
+                        <!-- 1 Star -->
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="rating-label">1 <i class="fas fa-star text-warning"></i></span>
+                            <div class="progress flex-grow-1 mx-3">
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: 2%" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <span class="rating-count">2</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filter and Sort -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <button class="btn btn-sm btn-outline-secondary active" data-filter="all">
+                        All Reviews (128)
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary" data-filter="verified">
+                        <i class="fas fa-check-circle"></i> Verified (95)
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary" data-filter="images">
+                        <i class="fas fa-image"></i> With Photos (42)
+                    </button>
+                </div>
+                <div>
+                    <select class="form-control form-control-sm" id="reviewSort">
+                        <option value="recent">Most Recent</option>
+                        <option value="helpful">Most Helpful</option>
+                        <option value="highest">Highest Rating</option>
+                        <option value="lowest">Lowest Rating</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Individual Reviews -->
+            <div id="reviewsList">
+                <!-- Review 1 -->
+                <article class="review-item mb-4 pb-4 border-bottom">
+                    <div class="d-flex">
+                        <div class="review-avatar mr-3">
+                            <img src="{% static 'images/avatars/avatar1.jpg' %}" class="rounded-circle" width="50" height="50" alt="User">
+                        </div>
+                        <div class="review-content flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h6 class="mb-0 font-weight-bold">Sarah Johnson</h6>
+                                    <div class="rating-stars">
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star text-warning"></i>
+                                    </div>
+                                </div>
+                                <span class="text-muted small">2 days ago</span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="badge badge-success">
+                                    <i class="fas fa-check-circle"></i> Verified Purchase
+                                </span>
+                            </div>
+                            <h6 class="font-weight-bold">Excellent quality and fit!</h6>
+                            <p class="text-muted mb-2">
+                                This product exceeded my expectations! The quality is outstanding and it fits perfectly. 
+                                I've been using it for a week now and I'm very satisfied. Highly recommend to anyone looking for quality.
+                            </p>
+                            <!-- Review Images -->
+                            <div class="review-images mb-3">
+                                <img src="{% static 'images/items/1.jpg' %}" class="review-img" alt="Review">
+                                <img src="{% static 'images/items/2.jpg' %}" class="review-img" alt="Review">
+                            </div>
+                            <div class="review-actions">
+                                <button class="btn btn-sm btn-outline-secondary helpful-btn">
+                                    <i class="far fa-thumbs-up"></i> Helpful (24)
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary ml-2">
+                                    <i class="far fa-comment"></i> Reply
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                
+                <!-- Review 2 -->
+                <article class="review-item mb-4 pb-4 border-bottom">
+                    <div class="d-flex">
+                        <div class="review-avatar mr-3">
+                            <img src="{% static 'images/avatars/avatar1.jpg' %}" class="rounded-circle" width="50" height="50" alt="User">
+                        </div>
+                        <div class="review-content flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h6 class="mb-0 font-weight-bold">Mike Anderson</h6>
+                                    <div class="rating-stars">
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="far fa-star text-warning"></i>
+                                    </div>
+                                </div>
+                                <span class="text-muted small">1 week ago</span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="badge badge-success">
+                                    <i class="fas fa-check-circle"></i> Verified Purchase
+                                </span>
+                            </div>
+                            <h6 class="font-weight-bold">Great value for money</h6>
+                            <p class="text-muted mb-2">
+                                Good product overall. The quality is solid and it arrived quickly. 
+                                Only minor issue is the sizing runs a bit small, so I'd recommend ordering one size up.
+                            </p>
+                            <div class="review-actions">
+                                <button class="btn btn-sm btn-outline-secondary helpful-btn">
+                                    <i class="far fa-thumbs-up"></i> Helpful (15)
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary ml-2">
+                                    <i class="far fa-comment"></i> Reply
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                
+                <!-- Review 3 -->
+                <article class="review-item mb-4 pb-4 border-bottom">
+                    <div class="d-flex">
+                        <div class="review-avatar mr-3">
+                            <img src="{% static 'images/avatars/avatar1.jpg' %}" class="rounded-circle" width="50" height="50" alt="User">
+                        </div>
+                        <div class="review-content flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h6 class="mb-0 font-weight-bold">Emily Chen</h6>
+                                    <div class="rating-stars">
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star text-warning"></i>
+                                    </div>
+                                </div>
+                                <span class="text-muted small">2 weeks ago</span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="badge badge-success">
+                                    <i class="fas fa-check-circle"></i> Verified Purchase
+                                </span>
+                            </div>
+                            <h6 class="font-weight-bold">Love it! Will buy again</h6>
+                            <p class="text-muted mb-2">
+                                Absolutely love this product! The quality is amazing and it looks exactly like the pictures. 
+                                Fast shipping and great customer service. Already recommended to my friends!
+                            </p>
+                            <div class="review-actions">
+                                <button class="btn btn-sm btn-outline-secondary helpful-btn">
+                                    <i class="far fa-thumbs-up"></i> Helpful (31)
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary ml-2">
+                                    <i class="far fa-comment"></i> Reply
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            
+            <!-- Load More Button -->
+            <div class="text-center mt-4">
+                <button class="btn btn-outline-primary" id="loadMoreReviews">
+                    <i class="fas fa-chevron-down mr-2"></i> Load More Reviews
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- ============================ REVIEWS SECTION END ================================= -->
     
-        </div> <!-- col.// -->
-    </div> <!-- row.// -->
+    <!-- Review Modal -->
+    <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reviewModalLabel">
+                        <i class="fas fa-pen mr-2"></i> Write Your Review
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="reviewForm">
+                        <!-- Rating -->
+                        <div class="form-group">
+                            <label class="font-weight-bold">Your Rating *</label>
+                            <div class="star-rating-input">
+                                <i class="far fa-star" data-rating="1"></i>
+                                <i class="far fa-star" data-rating="2"></i>
+                                <i class="far fa-star" data-rating="3"></i>
+                                <i class="far fa-star" data-rating="4"></i>
+                                <i class="far fa-star" data-rating="5"></i>
+                            </div>
+                            <input type="hidden" id="ratingValue" name="rating" required>
+                        </div>
+                        
+                        <!-- Review Title -->
+                        <div class="form-group">
+                            <label for="reviewTitle" class="font-weight-bold">Review Title *</label>
+                            <input type="text" class="form-control" id="reviewTitle" placeholder="Sum up your experience" required>
+                        </div>
+                        
+                        <!-- Review Text -->
+                        <div class="form-group">
+                            <label for="reviewText" class="font-weight-bold">Your Review *</label>
+                            <textarea class="form-control" id="reviewText" rows="5" placeholder="Share your thoughts about this product..." required></textarea>
+                            <small class="form-text text-muted">Minimum 50 characters</small>
+                        </div>
+                        
+                        <!-- Name -->
+                        <div class="form-group">
+                            <label for="reviewerName" class="font-weight-bold">Your Name *</label>
+                            <input type="text" class="form-control" id="reviewerName" placeholder="Enter your name" required>
+                        </div>
+                        
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label for="reviewerEmail" class="font-weight-bold">Your Email *</label>
+                            <input type="email" class="form-control" id="reviewerEmail" placeholder="your@email.com" required>
+                            <small class="form-text text-muted">Your email will not be published</small>
+                        </div>
+                        
+                        <!-- Upload Images -->
+                        <div class="form-group">
+                            <label class="font-weight-bold">Add Photos (Optional)</label>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="reviewImages" multiple accept="image/*">
+                                <label class="custom-file-label" for="reviewImages">Choose images...</label>
+                            </div>
+                            <small class="form-text text-muted">You can upload up to 5 images</small>
+                        </div>
+                        
+                        <!-- Recommend -->
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="recommendProduct">
+                                <label class="custom-control-label" for="recommendProduct">
+                                    I would recommend this product to a friend
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="submitReview">
+                        <i class="fas fa-paper-plane mr-2"></i> Submit Review
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     
     
     </div> <!-- container .//  -->

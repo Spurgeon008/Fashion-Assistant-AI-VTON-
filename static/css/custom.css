@@ -1056,3 +1056,879 @@ select.form-control {
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
+
+
+/* ==================== REVIEWS SECTION ==================== */
+.review-item {
+    transition: var(--transition);
+}
+
+.review-item:hover {
+    background: var(--light-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 0 -1rem 1rem -1rem;
+}
+
+.review-avatar img {
+    border: 2px solid var(--border-color);
+    object-fit: cover;
+}
+
+.review-content h6 {
+    color: var(--dark-color);
+}
+
+.review-images {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.review-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.review-img:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-md);
+}
+
+.review-actions .btn {
+    font-size: 0.875rem;
+}
+
+.helpful-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* Rating Summary */
+.rating-summary {
+    padding: 1rem;
+}
+
+.rating-breakdown {
+    padding: 1rem 0;
+}
+
+.rating-label {
+    min-width: 50px;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.rating-count {
+    min-width: 40px;
+    text-align: right;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.progress {
+    height: 8px;
+    border-radius: 10px;
+    background: var(--light-bg);
+}
+
+.progress-bar {
+    border-radius: 10px;
+}
+
+.bg-orange {
+    background-color: var(--warning-color);
+}
+
+/* Review Filter Buttons */
+.btn-outline-secondary.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* Star Rating Input */
+.star-rating-input {
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.star-rating-input i {
+    color: #ddd;
+    transition: var(--transition);
+    margin-right: 0.25rem;
+}
+
+.star-rating-input i:hover,
+.star-rating-input i.active {
+    color: var(--warning-color);
+}
+
+.star-rating-input i.fas {
+    color: var(--warning-color);
+}
+
+/* Review Modal */
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+    background: var(--light-bg);
+    border-bottom: 2px solid var(--border-color);
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-footer {
+    background: var(--light-bg);
+    border-top: 2px solid var(--border-color);
+    border-radius: 0 0 12px 12px;
+}
+
+/* Custom File Input */
+.custom-file-label {
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.custom-file-label:hover {
+    border-color: var(--primary-color);
+    background: var(--light-bg);
+}
+
+.custom-file-input:focus ~ .custom-file-label {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+}
+
+/* Review Form */
+#reviewForm .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+}
+
+#reviewForm textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Load More Button */
+#loadMoreReviews {
+    min-width: 200px;
+}
+
+#loadMoreReviews:hover {
+    transform: translateY(-2px);
+}
+
+/* Verified Badge */
+.badge-success {
+    background: var(--secondary-color);
+    font-weight: 500;
+}
+
+/* Review Sort Dropdown */
+#reviewSort {
+    min-width: 150px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+}
+
+#reviewSort:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+}
+
+/* Responsive Reviews */
+@media (max-width: 768px) {
+    .review-item {
+        padding: 0.5rem;
+    }
+    
+    .review-avatar {
+        margin-right: 1rem !important;
+    }
+    
+    .review-avatar img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .rating-breakdown {
+        margin-top: 1rem;
+    }
+    
+    .review-actions .btn {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .star-rating-input {
+        font-size: 1.5rem;
+    }
+}
+
+/* Review Animation */
+@keyframes slideInReview {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.review-item {
+    animation: slideInReview 0.5s ease;
+}
+
+/* Empty Reviews State */
+.no-reviews {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.no-reviews i {
+    font-size: 3rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.no-reviews h5 {
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+}
+
+.no-reviews p {
+    color: var(--text-muted);
+}
+
+
+/* ==================== REVIEW LIGHTBOX ==================== */
+.review-lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.review-lightbox.show {
+    opacity: 1;
+}
+
+.lightbox-img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 3rem;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+}
+
+.lightbox-close:hover {
+    transform: scale(1.2);
+    color: var(--danger-color);
+}
+
+/* ==================== REVIEW FORM ENHANCEMENTS ==================== */
+.form-text.text-success {
+    color: var(--secondary-color) !important;
+    font-weight: 500;
+}
+
+/* Custom Checkbox */
+.custom-control-input:checked ~ .custom-control-label::before {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.custom-control-input:focus ~ .custom-control-label::before {
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+}
+
+/* ==================== REVIEW STATS ==================== */
+.rating-summary .display-3 {
+    line-height: 1;
+}
+
+/* ==================== MOBILE OPTIMIZATIONS ==================== */
+@media (max-width: 576px) {
+    .review-content h6 {
+        font-size: 0.9rem;
+    }
+    
+    .review-item .badge {
+        font-size: 0.7rem;
+    }
+    
+    .rating-breakdown .rating-label {
+        min-width: 40px;
+        font-size: 0.875rem;
+    }
+    
+    .rating-breakdown .rating-count {
+        min-width: 30px;
+        font-size: 0.875rem;
+    }
+    
+    .lightbox-close {
+        top: 10px;
+        right: 10px;
+        font-size: 2rem;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+    }
+}
+
+
+/* ==================== AUTHENTICATION PAGES ==================== */
+.section-content {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+}
+
+/* Auth Card */
+.card.shadow-lg {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1) !important;
+}
+
+.card-body.p-5 {
+    padding: 3rem !important;
+}
+
+/* Auth Icons */
+.fa-user-circle,
+.fa-user-plus {
+    color: var(--primary-color);
+}
+
+/* Form Controls */
+.form-control-lg {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.form-control-lg:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+}
+
+/* Password Toggle Button */
+.input-group-append .btn {
+    border: 2px solid var(--border-color);
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+}
+
+.input-group .form-control {
+    border-right: none;
+}
+
+.input-group .form-control:focus {
+    border-right: none;
+}
+
+.input-group .form-control:focus + .input-group-append .btn {
+    border-color: var(--primary-color);
+}
+
+/* Social Buttons */
+.btn-outline-danger,
+.btn-outline-primary {
+    border-width: 2px;
+    font-weight: 500;
+}
+
+.btn-outline-danger:hover {
+    background: #dc2626;
+    border-color: #dc2626;
+    color: white;
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+/* Password Strength */
+.progress {
+    background: var(--light-bg);
+    border-radius: 10px;
+}
+
+.progress-bar {
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+/* Custom Checkbox */
+.custom-control-label {
+    cursor: pointer;
+    user-select: none;
+}
+
+.custom-control-label a {
+    text-decoration: underline;
+}
+
+.custom-control-label a:hover {
+    color: var(--primary-hover);
+}
+
+/* Alert Messages */
+.alert {
+    border-radius: 8px;
+    border: none;
+    font-weight: 500;
+}
+
+.alert-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--secondary-color);
+}
+
+.alert-danger,
+.alert-error {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger-color);
+}
+
+.alert-info {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--primary-color);
+}
+
+/* Divider */
+.text-center .text-muted {
+    position: relative;
+    display: inline-block;
+    padding: 0 1rem;
+    background: white;
+}
+
+.text-center .text-muted::before,
+.text-center .text-muted::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 100px;
+    height: 1px;
+    background: var(--border-color);
+}
+
+.text-center .text-muted::before {
+    right: 100%;
+}
+
+.text-center .text-muted::after {
+    left: 100%;
+}
+
+/* Responsive Auth Pages */
+@media (max-width: 768px) {
+    .card-body.p-5 {
+        padding: 2rem !important;
+    }
+    
+    .section-content {
+        padding: 2rem 0;
+    }
+    
+    .fa-user-circle,
+    .fa-user-plus {
+        font-size: 2rem !important;
+    }
+}
+
+/* Auth Page Animations */
+.card {
+    animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Form Focus Effects */
+.form-group {
+    position: relative;
+}
+
+.form-control:focus ~ label,
+.form-control:not(:placeholder-shown) ~ label {
+    transform: translateY(-1.5rem) scale(0.85);
+    color: var(--primary-color);
+}
+
+/* Submit Button Loading State */
+.btn-primary:disabled {
+    background: var(--text-muted);
+    border-color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+
+/* ==================== TEXT LOGO STYLING ==================== */
+.brand-wrap.text-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark-color);
+    letter-spacing: -0.5px;
+    transition: var(--transition);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.logo-accent {
+    color: var(--primary-color);
+    font-weight: 800;
+}
+
+.brand-wrap.text-logo:hover .logo-text {
+    color: var(--primary-color);
+    transform: scale(1.05);
+}
+
+.brand-wrap.text-logo:hover .logo-accent {
+    color: var(--primary-hover);
+}
+
+/* Alternative: Gradient Logo */
+.logo-text.gradient {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Logo with Icon */
+.logo-text::before {
+    content: '⚡';
+    margin-right: 0.25rem;
+    font-size: 1.3rem;
+    display: inline-block;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Responsive Logo */
+@media (max-width: 768px) {
+    .logo-text {
+        font-size: 1.2rem;
+    }
+    
+    .logo-text::before {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .logo-text {
+        font-size: 1rem;
+    }
+}
+
+/* Remove old logo styles if needed */
+.logo {
+    display: none;
+}
+
+
+/* ==================== PROFILE PAGE ==================== */
+.profile-picture-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+}
+
+.profile-picture,
+.profile-picture-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--border-color);
+    background: var(--light-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-picture {
+    transition: var(--transition);
+}
+
+.profile-picture:hover {
+    transform: scale(1.05);
+    border-color: var(--primary-color);
+}
+
+.profile-stats {
+    padding: 1rem 0;
+    border-top: 1px solid var(--border-color);
+    margin-top: 1rem;
+}
+
+.stat-item {
+    padding: 0.5rem 0;
+}
+
+.stat-item i {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Sidebar Navigation */
+.list-group-item {
+    border: none;
+    border-left: 3px solid transparent;
+    transition: var(--transition);
+}
+
+.list-group-item:hover {
+    background: var(--light-bg);
+    border-left-color: var(--primary-color);
+}
+
+.list-group-item.active {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--primary-color);
+    border-left-color: var(--primary-color);
+    font-weight: 600;
+}
+
+.list-group-item i {
+    width: 20px;
+    text-align: center;
+}
+
+/* VTON Image Sections */
+.vton-image-section {
+    padding: 1.5rem;
+    background: var(--light-bg);
+    border-radius: 12px;
+    transition: var(--transition);
+}
+
+.vton-image-section:hover {
+    background: #f3f4f6;
+    box-shadow: var(--shadow-sm);
+}
+
+.vton-image-preview {
+    width: 100%;
+    height: 200px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vton-image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.vton-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: var(--light-bg);
+}
+
+.vton-placeholder i {
+    opacity: 0.3;
+}
+
+/* Tab Content */
+.tab-content {
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-pane {
+    min-height: 400px;
+}
+
+/* Card Headers */
+.card-header.bg-white {
+    background: white !important;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.card-header h5 {
+    margin-bottom: 0;
+}
+
+/* Form Styling */
+.form-control:read-only {
+    background: var(--light-bg);
+    cursor: not-allowed;
+}
+
+/* Alert Styling */
+.alert-info {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    color: var(--dark-color);
+}
+
+.alert-info h6 {
+    color: var(--primary-color);
+}
+
+/* Save Button */
+.btn-lg.px-5 {
+    min-width: 200px;
+}
+
+/* Responsive Profile */
+@media (max-width: 991px) {
+    .profile-picture-container,
+    .profile-picture,
+    .profile-picture-placeholder {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .vton-image-preview {
+        height: 150px;
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-picture-container,
+    .profile-picture,
+    .profile-picture-placeholder {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .vton-image-section {
+        padding: 1rem;
+    }
+    
+    .vton-image-preview {
+        height: 180px;
+    }
+}
+
+/* Image Upload Feedback */
+.custom-file-label::after {
+    content: "Browse";
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.custom-file-input:focus ~ .custom-file-label {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+}
+
+/* Success Indicators */
+.text-success {
+    color: var(--secondary-color) !important;
+}
+
+.text-success i {
+    margin-right: 0.25rem;
+}
+
+/* Profile Page Background */
+.bg-light {
+    background: #f9fafb !important;
+}
+
+/* Card Shadows */
+.shadow-sm {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Tab Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Profile Stats */
+.stat-item strong {
+    color: var(--dark-color);
+    font-size: 0.9rem;
+}
+
+.stat-item small {
+    font-size: 0.75rem;
+}

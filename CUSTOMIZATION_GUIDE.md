@@ -2,7 +2,7 @@
 
 ## 🎨 Easy Customization
 
-This guide shows you how to customize the look and feel of your GreatKart website without breaking anything.
+This guide shows you how to customize the look and feel of your SmartFitStudios website without breaking anything.
 
 ## 🌈 Color Customization
 
@@ -92,22 +92,22 @@ Recommended size: 1920x600 pixels
 ### Site Name
 Edit in `templates/base.html`:
 ```html
-<title>GreatKart | One of the Biggest Online Shopping Platform</title>
+<title>SmartFitStudios | One of the Biggest Online Shopping Platform</title>
 ```
 
 ### Footer Copyright
 Edit in `templates/includes/footer.html`:
 ```html
 <p class="text-muted mb-0">
-    <i class="far fa-copyright"></i> 2024 GreatKart. All rights reserved.
+    <i class="far fa-copyright"></i> 2024 SmartFitStudios. All rights reserved.
 </p>
 ```
 
 ### Contact Information
 Edit in `templates/includes/navbar.html`:
 ```html
-<a href="mailto:support@greatkart.com" class="nav-link">
-    <i class="fas fa-envelope mr-1"></i> support@greatkart.com
+<a href="mailto:support@SmartFitStudios.com" class="nav-link">
+    <i class="fas fa-envelope mr-1"></i> support@SmartFitStudios.com
 </a>
 <a href="tel:+1234567890" class="nav-link">
     <i class="fas fa-phone mr-1"></i> +1 (234) 567-890

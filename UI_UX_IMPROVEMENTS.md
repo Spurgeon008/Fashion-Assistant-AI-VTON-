@@ -1,7 +1,7 @@
 # UI/UX Improvements Documentation
 
 ## Overview
-This document outlines all the frontend improvements made to the GreatKart e-commerce platform. The VTON (Virtual Try-On) functionality has been left completely untouched as requested.
+This document outlines all the frontend improvements made to the SmartFitStudios e-commerce platform. The VTON (Virtual Try-On) functionality has been left completely untouched as requested.
 
 ## 🎨 What's Been Improved
 

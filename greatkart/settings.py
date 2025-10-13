@@ -140,4 +140,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Google Generative AI API Key
 # Replace the empty string below with your actual Gemini API key
 # You can get one from: https://aistudio.google.com/app/apikey
-GEMINI_API_KEY = ''  # Paste your actual API key here
+GEMINI_API_KEY = 'AIzaSyDktTtX2nXl-QTBWuLmZho5fV3PzDS9d9A'  # Paste your actual API key here

@@ -1,4 +1,4 @@
-// Enhanced scripts for GreatKart
+// Enhanced scripts for SmartFitStudios
 
 // jquery ready start
 $(document).ready(function() {
@@ -251,5 +251,202 @@ $(document).ready(function() {
     $('a:contains("Proceed to Checkout")').click(function(e) {
         var btn = $(this);
         btn.html('<i class="fas fa-spinner fa-spin mr-2"></i> Processing...');
+    });
+});
+
+
+// ==================== REVIEWS SECTION ====================
+$(document).ready(function() {
+    
+    // Star Rating Input
+    $('.star-rating-input i').on('click', function() {
+        var rating = $(this).data('rating');
+        $('#ratingValue').val(rating);
+        
+        // Update star display
+        $('.star-rating-input i').each(function(index) {
+            if (index < rating) {
+                $(this).removeClass('far').addClass('fas');
+            } else {
+                $(this).removeClass('fas').addClass('far');
+            }
+        });
+    });
+    
+    // Star Rating Hover Effect
+    $('.star-rating-input i').on('mouseenter', function() {
+        var rating = $(this).data('rating');
+        $('.star-rating-input i').each(function(index) {
+            if (index < rating) {
+                $(this).addClass('active');
+            } else {
+                $(this).removeClass('active');
+            }
+        });
+    });
+    
+    $('.star-rating-input').on('mouseleave', function() {
+        var currentRating = $('#ratingValue').val();
+        $('.star-rating-input i').removeClass('active');
+        if (currentRating) {
+            $('.star-rating-input i').each(function(index) {
+                if (index < currentRating) {
+                    $(this).addClass('active');
+                }
+            });
+        }
+    });
+    
+    // Submit Review
+    $('#submitReview').on('click', function() {
+        var rating = $('#ratingValue').val();
+        var title = $('#reviewTitle').val();
+        var text = $('#reviewText').val();
+        var name = $('#reviewerName').val();
+        var email = $('#reviewerEmail').val();
+        
+        // Validation
+        if (!rating) {
+            showNotification('Please select a rating', 'error');
+            return;
+        }
+        
+        if (!title || !text || !name || !email) {
+            showNotification('Please fill in all required fields', 'error');
+            return;
+        }
+        
+        if (text.length < 50) {
+            showNotification('Review must be at least 50 characters', 'error');
+            return;
+        }
+        
+        // Show loading
+        var btn = $(this);
+        var originalText = btn.html();
+        btn.html('<i class="fas fa-spinner fa-spin mr-2"></i> Submitting...').prop('disabled', true);
+        
+        // Simulate submission (replace with actual AJAX call)
+        setTimeout(function() {
+            showNotification('Thank you! Your review has been submitted successfully.', 'success');
+            $('#reviewModal').modal('hide');
+            $('#reviewForm')[0].reset();
+            $('.star-rating-input i').removeClass('fas active').addClass('far');
+            $('#ratingValue').val('');
+            btn.html(originalText).prop('disabled', false);
+        }, 1500);
+    });
+    
+    // Helpful Button
+    $('.helpful-btn').on('click', function() {
+        var btn = $(this);
+        if (!btn.hasClass('active')) {
+            btn.addClass('active');
+            var currentCount = parseInt(btn.text().match(/\d+/)[0]);
+            btn.html('<i class="fas fa-thumbs-up"></i> Helpful (' + (currentCount + 1) + ')');
+            showNotification('Thanks for your feedback!', 'success');
+        } else {
+            btn.removeClass('active');
+            var currentCount = parseInt(btn.text().match(/\d+/)[0]);
+            btn.html('<i class="far fa-thumbs-up"></i> Helpful (' + (currentCount - 1) + ')');
+        }
+    });
+    
+    // Review Filter Buttons
+    $('button[data-filter]').on('click', function() {
+        $('button[data-filter]').removeClass('active');
+        $(this).addClass('active');
+        
+        var filter = $(this).data('filter');
+        // Here you would filter the reviews based on the selected filter
+        showNotification('Showing ' + filter + ' reviews', 'success');
+    });
+    
+    // Review Sort
+    $('#reviewSort').on('change', function() {
+        var sortBy = $(this).val();
+        // Here you would sort the reviews based on the selected option
+        showNotification('Reviews sorted by ' + sortBy, 'success');
+    });
+    
+    // Load More Reviews
+    $('#loadMoreReviews').on('click', function() {
+        var btn = $(this);
+        var originalText = btn.html();
+        btn.html('<i class="fas fa-spinner fa-spin mr-2"></i> Loading...').prop('disabled', true);
+        
+        // Simulate loading more reviews
+        setTimeout(function() {
+            btn.html(originalText).prop('disabled', false);
+            showNotification('More reviews loaded', 'success');
+        }, 1000);
+    });
+    
+    // Custom File Input Label Update
+    $('#reviewImages').on('change', function() {
+        var fileCount = this.files.length;
+        var label = $(this).next('.custom-file-label');
+        if (fileCount > 0) {
+            label.text(fileCount + ' image(s) selected');
+        } else {
+            label.text('Choose images...');
+        }
+    });
+    
+    // Review Image Click (Lightbox effect)
+    $('.review-img').on('click', function() {
+        var imgSrc = $(this).attr('src');
+        // Create a simple lightbox
+        var lightbox = $('<div class="review-lightbox"></div>');
+        var img = $('<img src="' + imgSrc + '" class="lightbox-img">');
+        var close = $('<button class="lightbox-close">&times;</button>');
+        
+        lightbox.append(close).append(img);
+        $('body').append(lightbox);
+        
+        setTimeout(function() {
+            lightbox.addClass('show');
+        }, 10);
+        
+        // Close lightbox
+        close.on('click', function() {
+            lightbox.removeClass('show');
+            setTimeout(function() {
+                lightbox.remove();
+            }, 300);
+        });
+        
+        lightbox.on('click', function(e) {
+            if (e.target === this) {
+                lightbox.removeClass('show');
+                setTimeout(function() {
+                    lightbox.remove();
+                }, 300);
+            }
+        });
+    });
+    
+    // Character counter for review text
+    $('#reviewText').on('input', function() {
+        var length = $(this).val().length;
+        var minLength = 50;
+        var remaining = minLength - length;
+        
+        var counter = $(this).next('.form-text');
+        if (length < minLength) {
+            counter.text('Minimum 50 characters (' + remaining + ' more needed)');
+            counter.removeClass('text-success').addClass('text-muted');
+        } else {
+            counter.text('Great! Your review is detailed enough.');
+            counter.removeClass('text-muted').addClass('text-success');
+        }
+    });
+    
+    // Reset modal on close
+    $('#reviewModal').on('hidden.bs.modal', function() {
+        $('#reviewForm')[0].reset();
+        $('.star-rating-input i').removeClass('fas active').addClass('far');
+        $('#ratingValue').val('');
+        $('.custom-file-label').text('Choose images...');
     });
 });

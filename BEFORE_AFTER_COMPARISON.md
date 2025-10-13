@@ -2,7 +2,7 @@
 
 ## 🎨 Visual Transformation Overview
 
-This document highlights the dramatic improvements made to your GreatKart e-commerce website.
+This document highlights the dramatic improvements made to your SmartFitStudios e-commerce website.
 
 ---
 

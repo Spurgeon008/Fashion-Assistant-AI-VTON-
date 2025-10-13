@@ -22,8 +22,8 @@
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a href="mailto:support@greatkart.com" class="nav-link">
-                            <i class="fas fa-envelope mr-1"></i> support@greatkart.com
+                        <a href="mailto:support@smartfitstudios.com" class="nav-link">
+                            <i class="fas fa-envelope mr-1"></i> support@smartfitstudios.com
                         </a>
                     </li>
                     <li class="nav-item">
@@ -42,8 +42,8 @@
             <div class="row align-items-center">
                 <!-- Logo -->
                 <div class="col-lg-2 col-md-3 col-6">
-                    <a href="{% url 'home' %}" class="brand-wrap">
-                        <img class="logo" src="{% static 'images/logo.png' %}" alt="GreatKart">
+                    <a href="{% url 'home' %}" class="brand-wrap text-logo">
+                        <span class="logo-text">Smart<span class="logo-accent">Fit</span>Studios</span>
                     </a>
                 </div>
                 
@@ -93,16 +93,29 @@
                     <div class="d-flex justify-content-end align-items-center">
                         <!-- User Account -->
                         <div class="widget-header mr-3">
-                            <small class="title text-muted d-block">Welcome guest!</small>
-                            <div> 
-                                <a href="./signin.html" class="text-dark">
-                                    <i class="fas fa-sign-in-alt mr-1"></i> Sign in
-                                </a>
-                                <span class="text-muted mx-1">|</span>
-                                <a href="./register.html" class="text-dark">
-                                    <i class="fas fa-user-plus mr-1"></i> Register
-                                </a>
-                            </div>
+                            {% if user.is_authenticated %}
+                                <small class="title text-muted d-block">Welcome, {{ user.first_name }}!</small>
+                                <div> 
+                                    <a href="{% url 'profile' %}" class="text-dark">
+                                        <i class="fas fa-user mr-1"></i> My Profile
+                                    </a>
+                                    <span class="text-muted mx-1">|</span>
+                                    <a href="{% url 'signout' %}" class="text-dark">
+                                        <i class="fas fa-sign-out-alt mr-1"></i> Sign Out
+                                    </a>
+                                </div>
+                            {% else %}
+                                <small class="title text-muted d-block">Welcome guest!</small>
+                                <div> 
+                                    <a href="{% url 'signin' %}" class="text-dark">
+                                        <i class="fas fa-sign-in-alt mr-1"></i> Sign in
+                                    </a>
+                                    <span class="text-muted mx-1">|</span>
+                                    <a href="{% url 'register' %}" class="text-dark">
+                                        <i class="fas fa-user-plus mr-1"></i> Register
+                                    </a>
+                                </div>
+                            {% endif %}
                         </div>
                         
                         <!-- Shopping Cart -->

@@ -2,7 +2,7 @@
 
 ## 🎉 What's New?
 
-Your GreatKart e-commerce website now has a **complete modern UI/UX makeover**! Here's what you'll notice:
+Your SmartFitStudios e-commerce website now has a **complete modern UI/UX makeover**! Here's what you'll notice:
 
 ## 🚀 Immediate Visual Changes
 

@@ -41,6 +41,20 @@ class Account(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=100, unique=True)
     phone_number = models.CharField(max_length=50, blank=True)
 
+    # Profile Images for VTON
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True, help_text='Profile picture')
+    face_image = models.ImageField(upload_to='user_images/face/', blank=True, null=True, help_text='Close-up face image for virtual try-on')
+    upper_body_image = models.ImageField(upload_to='user_images/upper_body/', blank=True, null=True, help_text='Upper body image for shirts/tops try-on')
+    full_body_image = models.ImageField(upload_to='user_images/full_body/', blank=True, null=True, help_text='Full body image for pants/shoes try-on')
+    
+    # Additional Profile Info
+    address_line_1 = models.CharField(max_length=100, blank=True)
+    address_line_2 = models.CharField(max_length=100, blank=True)
+    city = models.CharField(max_length=50, blank=True)
+    state = models.CharField(max_length=50, blank=True)
+    country = models.CharField(max_length=50, blank=True)
+    postal_code = models.CharField(max_length=20, blank=True)
+
     # Timestamps
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True) # Use auto_now=True for last_login

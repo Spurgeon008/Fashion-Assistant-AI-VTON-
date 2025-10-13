@@ -1,8 +1,8 @@
-# 🎨 GreatKart Frontend Improvements
+# 🎨 SmartFitStudios Frontend Improvements
 
 ## Welcome! 👋
 
-Your GreatKart e-commerce website has received a **complete modern UI/UX overhaul**. This README will guide you through everything you need to know.
+Your SmartFitStudios e-commerce website has received a **complete modern UI/UX overhaul**. This README will guide you through everything you need to know.
 
 ---
 
@@ -405,6 +405,6 @@ You now have a **world-class e-commerce frontend** that:
 
 ---
 
-**Made with ❤️ for GreatKart**
+**Made with ❤️ for SmartFitStudios**
 
 **Enjoy your beautiful new website! 🎉**

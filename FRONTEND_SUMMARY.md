@@ -2,7 +2,7 @@
 
 ## 🎉 Complete UI/UX Overhaul - DONE!
 
-Your GreatKart e-commerce website has received a **complete modern frontend makeover** while keeping all VTON functionality completely untouched.
+Your SmartFitStudios e-commerce website has received a **complete modern frontend makeover** while keeping all VTON functionality completely untouched.
 
 ## 📋 What Was Done
 
@@ -274,7 +274,7 @@ Need help or want more features?
 
 ## 🎊 Conclusion
 
-Your GreatKart e-commerce platform now has a **world-class frontend** that:
+Your SmartFitStudios e-commerce platform now has a **world-class frontend** that:
 - Looks professional and modern
 - Works perfectly on all devices
 - Provides excellent user experience

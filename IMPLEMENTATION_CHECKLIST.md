@@ -417,7 +417,7 @@ All frontend improvements have been successfully implemented, tested, and docume
 
 ## 🎊 Congratulations!
 
-Your GreatKart e-commerce website now has:
+Your SmartFitStudios e-commerce website now has:
 - ✨ World-class UI/UX
 - 📱 Perfect mobile experience
 - 🚀 Better user engagement
