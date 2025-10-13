@@ -119,6 +119,95 @@ def remix_images(image_paths, prompt):
     return images_data
 
 @csrf_exempt
+def generate_video_vton(request):
+    """
+    Handles the VTON video generation request by triggering the n8n workflow.
+    Expects POST request with 'person_image' file and 'prompt'.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Only POST method is allowed'}, status=405)
+    
+    try:
+        import requests
+        import base64
+        
+        # Get the uploaded file and prompt
+        person_image = request.FILES.get('person_image')
+        cloth_image = request.FILES.get('cloth_image')
+        prompt = request.POST.get('prompt', 'Create a video showing the person wearing this clothing item')
+        user_id = request.POST.get('userid', request.user.id if request.user.is_authenticated else 'anonymous')
+        
+        if not person_image or not cloth_image:
+            return JsonResponse({'error': 'Both person_image and cloth_image are required'}, status=400)
+        
+        # Read and encode images to base64
+        person_image_data = person_image.read()
+        cloth_image_data = cloth_image.read()
+        
+        person_base64 = base64.b64encode(person_image_data).decode('utf-8')
+        cloth_base64 = base64.b64encode(cloth_image_data).decode('utf-8')
+        
+        # Get n8n webhook URL from settings
+        n8n_webhook_url = getattr(settings, 'N8N_VIDEO_WEBHOOK_URL', 'http://localhost:5678/webhook/video-vton')
+        
+        # Prepare the payload matching the video.json workflow structure
+        payload = {
+            'body': {
+                'prompt': prompt,
+                'userid': user_id,
+                'output': '2-image'  # This triggers the video generation path
+            },
+            'binary': {
+                'image0': {
+                    'data': person_base64,
+                    'mimeType': person_image.content_type or 'image/jpeg'
+                },
+                'image1': {
+                    'data': cloth_base64,
+                    'mimeType': cloth_image.content_type or 'image/jpeg'
+                }
+            }
+        }
+        
+        print(f"DEBUG: Triggering n8n video workflow at {n8n_webhook_url}")
+        print(f"DEBUG: Prompt: {prompt}")
+        print(f"DEBUG: User ID: {user_id}")
+        
+        # Trigger the n8n workflow
+        response = requests.post(
+            n8n_webhook_url,
+            json=payload,
+            timeout=300  # 5 minute timeout for video generation
+        )
+        
+        if response.status_code == 200:
+            result = response.json()
+            return JsonResponse({
+                'success': True,
+                'message': 'Video generation started successfully',
+                'workflow_response': result
+            })
+        else:
+            return JsonResponse({
+                'error': f'n8n workflow failed with status {response.status_code}',
+                'details': response.text
+            }, status=500)
+            
+    except requests.exceptions.Timeout:
+        return JsonResponse({
+            'error': 'Video generation timed out. The process may still be running in the background.'
+        }, status=504)
+    except Exception as e:
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"ERROR: Video VTON generation failed")
+        print(error_details)
+        
+        return JsonResponse({
+            'error': f'Video VTON generation failed: {str(e)}'
+        }, status=500)
+
+@csrf_exempt
 def generate_vton(request):
     """
     Handles the VTON image generation request.

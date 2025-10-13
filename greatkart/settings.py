@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 import os
 from pathlib import Path
+from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -21,12 +22,12 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '%)fvjakcctr5evl+c)%s1=x*#1tj#b62p3p=qa1#&!$)0u)q#8'
+SECRET_KEY = config('SECRET_KEY', default='%)fvjakcctr5evl+c)%s1=x*#1tj#b62p3p=qa1#&!$)0u)q#8')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
 
 
 # Application definition
@@ -138,6 +139,11 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Google Generative AI API Key
-# Replace the empty string below with your actual Gemini API key
-# You can get one from: https://aistudio.google.com/app/apikey
-GEMINI_API_KEY = 'AIzaSyDktTtX2nXl-QTBWuLmZho5fV3PzDS9d9A'  # Paste your actual API key here
+# Get your key from: https://aistudio.google.com/app/apikey
+# Stored in .env file for security
+GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
+
+# n8n Webhook Configuration for Video VTON
+# Stored in .env file for security
+# Example: 'http://localhost:5678/webhook/video-vton' or 'https://your-n8n-instance.com/webhook/video-vton'
+N8N_VIDEO_WEBHOOK_URL = config('N8N_VIDEO_WEBHOOK_URL', default='http://localhost:5678/webhook/video-vton')
