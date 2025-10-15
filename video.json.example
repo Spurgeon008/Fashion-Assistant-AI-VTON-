@@ -6,7 +6,10 @@
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [-496, -672],
+      "position": [
+        -496,
+        -672
+      ],
       "id": "11550a91-00e8-45b8-a544-081f152b5eb2",
       "name": "Code3"
     },
@@ -31,7 +34,10 @@
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [288, -672],
+      "position": [
+        288,
+        -672
+      ],
       "id": "b7322677-0a42-472e-b978-b17536099e68",
       "name": "input2",
       "credentials": {
@@ -73,7 +79,10 @@
       },
       "type": "n8n-nodes-base.baserow",
       "typeVersion": 1,
-      "position": [704, -672],
+      "position": [
+        704,
+        -672
+      ],
       "id": "f17c17c7-f516-4728-ab8d-9ccbae842308",
       "name": "Baserow1",
       "credentials": {
@@ -104,7 +113,10 @@
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [432, -528],
+      "position": [
+        432,
+        -528
+      ],
       "id": "e7b950fb-a54f-4aee-a6fb-f55e1319fcb0",
       "name": "output1",
       "credentials": {
@@ -135,7 +147,10 @@
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [304, -816],
+      "position": [
+        304,
+        -816
+      ],
       "id": "aa45bea0-629e-47fc-a611-6950b17da3a7",
       "name": "input",
       "credentials": {
@@ -151,7 +166,10 @@
       },
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
-      "position": [544, -688],
+      "position": [
+        544,
+        -688
+      ],
       "id": "06e85d6a-2897-4eaa-9388-77139560acfc",
       "name": "Merge1"
     },
@@ -159,7 +177,10 @@
       "parameters": {},
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
-      "position": [-336, -656],
+      "position": [
+        -336,
+        -656
+      ],
       "id": "af98ef1b-9944-4f23-a3ff-025ce4cc87f4",
       "name": "Merge2"
     },
@@ -209,7 +230,10 @@
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [-16, -656],
+      "position": [
+        -16,
+        -656
+      ],
       "id": "877bdbf6-5035-41c9-924d-79eead5ea02e",
       "name": "If"
     },
@@ -219,7 +243,10 @@
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [-176, -656],
+      "position": [
+        -176,
+        -656
+      ],
       "id": "af658970-00df-47de-abb5-973ef3b1e4e2",
       "name": "Code in JavaScript1"
     },
@@ -229,7 +256,7 @@
         "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent",
         "sendHeaders": true,
         "specifyHeaders": "json",
-        "jsonHeaders": "{\n  \"x-goog-api-key\": \"YOUR_GEMINI_API_KEY_HERE\",\n  \"Content-Type\": \"application/json\"\n}",
+        "jsonHeaders": "{\n  \"x-goog-api-key\": \"AIzaSyDktTtX2nXl-QTBWuLmZho5fV3PzDS9d9A\",\n  \"Content-Type\": \"application/json\"\n}",
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={\n  \"contents\": [{\n    \"parts\": [\n      {\n        \"inline_data\": {\n          \"mime_type\": \"image/png\",\n          \"data\": \"{{ $json.image0 }}\"\n        }\n      },\n      {\n        \"inline_data\": {\n          \"mime_type\": \"image/png\", \n          \"data\": \"{{ $json.image1 }}\"\n        }\n      },\n      {\n        \"text\": \"{{ $json.prompt }}\"\n      }\n    ]\n  }]\n}",
@@ -237,7 +264,10 @@
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [128, -528],
+      "position": [
+        128,
+        -528
+      ],
       "id": "e77d2a4c-82ba-4f61-8fab-a2e6b1908835",
       "name": "HTTP Request2"
     },
@@ -249,7 +279,10 @@
       },
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
-      "position": [288, -528],
+      "position": [
+        288,
+        -528
+      ],
       "id": "1f5b1aa5-4717-49fd-aa09-7c972938d499",
       "name": "Convert to File2"
     },
@@ -262,7 +295,10 @@
       },
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
-      "position": [128, -816],
+      "position": [
+        128,
+        -816
+      ],
       "id": "a3dd0dc6-071e-415e-9ebf-4bc8649f54db",
       "name": "Convert to File"
     },
@@ -275,7 +311,10 @@
       },
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
-      "position": [128, -672],
+      "position": [
+        128,
+        -672
+      ],
       "id": "b84c3eca-a6bb-4756-9465-2ced754346ae",
       "name": "Convert to File3"
     },
@@ -285,7 +324,10 @@
       },
       "type": "n8n-nodes-comfyui.comfyui",
       "typeVersion": 1,
-      "position": [-176, -512],
+      "position": [
+        -176,
+        -512
+      ],
       "id": "fd20ef87-768d-49d3-acbd-406f7152b6d1",
       "name": "output_2_img1",
       "credentials": {
@@ -321,7 +363,9 @@
       ]
     },
     "Baserow1": {
-      "main": [[]]
+      "main": [
+        []
+      ]
     },
     "output1": {
       "main": [

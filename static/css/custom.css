@@ -1932,3 +1932,37 @@ select.form-control {
 .stat-item small {
     font-size: 0.75rem;
 }
+
+
+/* ==================== HERO BANNER ENHANCEMENTS ==================== */
+.intro-banner-wrap {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    margin: 2rem 0;
+}
+
+.intro-banner-wrap img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+.intro-banner-wrap:hover img {
+    transform: scale(1.02);
+}
+
+/* Make banner responsive */
+@media (max-width: 768px) {
+    .intro-banner-wrap {
+        border-radius: 12px;
+        margin: 1rem 0;
+    }
+}
+
+/* Ensure banner fits well */
+.section-intro {
+    padding: 2rem 0;
+}

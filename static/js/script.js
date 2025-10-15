@@ -450,3 +450,195 @@ $(document).ready(function() {
         $('.custom-file-label').text('Choose images...');
     });
 });
+
+
+// ==================== VIRTUAL TRY-ON SECTION ====================
+$(document).ready(function() {
+    
+    // Image-based VTON Form Submission
+    $('#image-vton-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        var personImage = $('#person-image')[0].files[0];
+        var clothImage = $('#cloth-image')[0].files[0];
+        
+        // Validation
+        if (!personImage || !clothImage) {
+            showNotification('Please select both person and cloth images', 'error');
+            return;
+        }
+        
+        // Validate file sizes (max 10MB each)
+        var maxSize = 10 * 1024 * 1024; // 10MB
+        if (personImage.size > maxSize) {
+            showNotification('Person image is too large. Max size: 10MB', 'error');
+            return;
+        }
+        if (clothImage.size > maxSize) {
+            showNotification('Cloth image is too large. Max size: 10MB', 'error');
+            return;
+        }
+        
+        // Create FormData
+        var formData = new FormData();
+        formData.append('person_image', personImage);
+        formData.append('cloth_image', clothImage);
+        
+        // Show loading state
+        var submitBtn = $(this).find('button[type="submit"]');
+        var originalText = submitBtn.html();
+        submitBtn.html('<i class="fas fa-spinner fa-spin mr-2"></i> Generating... (this may take 10-30 seconds)').prop('disabled', true);
+        
+        // Hide previous result
+        $('#image-vton-result').hide();
+        
+        // Send AJAX request
+        $.ajax({
+            url: '/vton/generate_vton/',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            timeout: 60000, // 60 second timeout
+            success: function(response) {
+                if (response.success && response.image_data) {
+                    // Display the generated image
+                    $('#image-vton-output').attr('src', 'data:image/jpeg;base64,' + response.image_data);
+                    $('#image-vton-result').fadeIn();
+                    showNotification('Virtual try-on generated successfully!', 'success');
+                    
+                    // Scroll to result
+                    $('html, body').animate({
+                        scrollTop: $('#image-vton-result').offset().top - 100
+                    }, 500);
+                } else {
+                    showNotification('Failed to generate try-on: ' + (response.error || 'Unknown error'), 'error');
+                }
+            },
+            error: function(xhr, status, error) {
+                var errorMessage = 'Failed to generate try-on';
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    errorMessage = xhr.responseJSON.error;
+                } else if (status === 'timeout') {
+                    errorMessage = 'Request timed out. Please try again with smaller images.';
+                }
+                showNotification(errorMessage, 'error');
+                console.error('VTON Error:', xhr.responseText);
+            },
+            complete: function() {
+                // Restore button
+                submitBtn.html(originalText).prop('disabled', false);
+            }
+        });
+    });
+    
+    // Download VTON Image
+    $('#download-vton-btn').on('click', function() {
+        var imgSrc = $('#image-vton-output').attr('src');
+        if (imgSrc) {
+            var link = document.createElement('a');
+            link.href = imgSrc;
+            link.download = 'virtual-tryon-' + Date.now() + '.jpg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showNotification('Image downloaded successfully!', 'success');
+        }
+    });
+    
+    // Video-based VTON Form Submission
+    $('#video-vton-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        var personImage = $('#video-person-image')[0].files[0];
+        
+        // Validation
+        if (!personImage) {
+            showNotification('Please select a person image', 'error');
+            return;
+        }
+        
+        // Validate file size (max 10MB)
+        var maxSize = 10 * 1024 * 1024; // 10MB
+        if (personImage.size > maxSize) {
+            showNotification('Image is too large. Max size: 10MB', 'error');
+            return;
+        }
+        
+        // Get the product image from the page
+        var productImageUrl = $('.gallery-wrap .img-big-wrap img').attr('src');
+        
+        // Create FormData
+        var formData = new FormData();
+        formData.append('person_image', personImage);
+        formData.append('prompt', 'Create a video showing the person wearing this clothing item');
+        
+        // If we can get the product image, add it
+        // Note: This requires the product image to be accessible
+        // For now, we'll just send the person image
+        
+        // Show loading state
+        var submitBtn = $(this).find('button[type="submit"]');
+        var originalText = submitBtn.html();
+        submitBtn.html('<i class="fas fa-spinner fa-spin mr-2"></i> Generating video... (this may take several minutes)').prop('disabled', true);
+        
+        // Hide previous result
+        $('#video-vton-result').hide();
+        
+        // Send AJAX request
+        $.ajax({
+            url: '/vton/generate_video_vton/',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            timeout: 300000, // 5 minute timeout for video generation
+            success: function(response) {
+                if (response.success) {
+                    showNotification('Video generation started! Check your n8n workflow for the result.', 'success');
+                    // Note: Video generation is async, so we can't display it immediately
+                    // You would need to implement a polling mechanism or webhook to get the result
+                } else {
+                    showNotification('Failed to generate video: ' + (response.error || 'Unknown error'), 'error');
+                }
+            },
+            error: function(xhr, status, error) {
+                var errorMessage = 'Failed to generate video';
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    errorMessage = xhr.responseJSON.error;
+                } else if (status === 'timeout') {
+                    errorMessage = 'Request timed out. Video generation may still be processing in the background.';
+                }
+                showNotification(errorMessage, 'error');
+                console.error('Video VTON Error:', xhr.responseText);
+            },
+            complete: function() {
+                // Restore button
+                submitBtn.html(originalText).prop('disabled', false);
+            }
+        });
+    });
+    
+    // Image preview for VTON uploads
+    $('#person-image, #cloth-image, #video-person-image').on('change', function() {
+        var file = this.files[0];
+        if (file && file.type.startsWith('image/')) {
+            var reader = new FileReader();
+            var inputId = $(this).attr('id');
+            
+            reader.onload = function(e) {
+                var previewId = inputId + '-preview';
+                var preview = $('#' + previewId);
+                
+                if (preview.length === 0) {
+                    preview = $('<div class="mt-2"><img id="' + previewId + '" class="img-thumbnail" style="max-width: 200px;"><p class="text-muted small mt-1">Preview</p></div>');
+                    $('#' + inputId).parent().append(preview);
+                }
+                
+                $('#' + previewId).attr('src', e.target.result);
+            };
+            
+            reader.readAsDataURL(file);
+        }
+    });
+});
