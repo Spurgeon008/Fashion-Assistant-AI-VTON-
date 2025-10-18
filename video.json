@@ -2,80 +2,73 @@
   "nodes": [
     {
       "parameters": {
-        "jsCode": "// Get the first input item\nconst inputItem = $input.first();\n\n// Safely access binaries\nconst image0 = inputItem.binary?.image0;\nconst image1 = inputItem.binary?.image1;\n\nreturn [\n  {\n    json: {\n      prompt: $input.first().json.body.prompt,\n      image0: image0 ? image0.data : null,\n      image0_mime: image0 ? image0.mimeType : null,\n      image1: image1 ? image1.data : null,\n      image1_mime: image1 ? image1.mimeType : null,\n    }\n  }\n];\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [-496, -672],
-      "id": "11550a91-00e8-45b8-a544-081f152b5eb2",
-      "name": "Code3"
-    },
-    {
-      "parameters": {
         "method": "POST",
-        "url": "http://host.docker.internal:85/api/user-files/upload-file/",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "sendBody": true,
-        "contentType": "multipart-form-data",
-        "bodyParameters": {
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-preview:predictLongRunning",
+        "sendQuery": true,
+        "queryParameters": {
           "parameters": [
             {
-              "parameterType": "formBinaryData",
-              "name": "=file",
-              "inputDataFieldName": "image1"
+              "name": "key",
+              "value": "AIzaSyBC7BfwnfQbdAQubKwbIEzsHklbWKmjtgs"
             }
           ]
         },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"instances\": [\n    {\n      \"prompt\": \"{{ $json.prompt }}\",\n      \"image\": {\n        \"bytesBase64Encoded\": \"{{ $json.image0 }}\",\n        \"mimeType\": \"image/png\"\n      }\n    }\n  ],\n  \"parameters\": {\n    \"aspectRatio\": \"16:9\"\n  }\n}\n",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [288, -672],
-      "id": "b7322677-0a42-472e-b978-b17536099e68",
-      "name": "input2",
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "c95uehxeKDKY8RwF",
-          "name": "Header Auth account 2"
-        }
-      }
+      "position": [
+        208,
+        -1632
+      ],
+      "id": "cdd4c7c3-4b75-4230-ba46-dbdce1b9e61c",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        -1632
+      ],
+      "id": "8ad0d7c6-190f-4208-b575-180791f9ddca",
+      "name": "Wait",
+      "webhookId": "e0f09e20-77e7-41a7-b38c-be3bbde32532"
     },
     {
       "parameters": {
         "operation": "create",
         "databaseId": 172,
-        "tableId": 701,
+        "tableId": 706,
         "fieldsUi": {
           "fieldValues": [
             {
-              "fieldId": 6848,
-              "fieldValue": "={{ $('output1').first().json.name }}"
+              "fieldId": 6869,
+              "fieldValue": "={{ $('start').item.json.userid }}"
             },
             {
-              "fieldId": 6856,
-              "fieldValue": "={{ $('input').first().json.name }}"
+              "fieldId": 6870,
+              "fieldValue": "={{ $('start').item.json.script }}"
             },
             {
-              "fieldId": 6857,
-              "fieldValue": "={{ $('input2').first().json.name }}"
-            },
-            {
-              "fieldId": 6845,
-              "fieldValue": "={{ $('Webhook').first().json.body.userid }}"
-            },
-            {
-              "fieldId": 6849,
-              "fieldValue": "={{ $('Webhook').first().json.body.prompt }}"
+              "fieldId": 6871,
+              "fieldValue": "={{ $json.name }}"
             }
           ]
         }
       },
       "type": "n8n-nodes-base.baserow",
       "typeVersion": 1,
-      "position": [704, -672],
-      "id": "f17c17c7-f516-4728-ab8d-9ccbae842308",
-      "name": "Baserow1",
+      "position": [
+        688,
+        -1424
+      ],
+      "id": "ba6c251a-636a-49be-86a6-cd3295b9d8b6",
+      "name": "Create a row1",
       "credentials": {
         "baserowApi": {
           "id": "BafUqBYezrcMUXZH",
@@ -85,18 +78,13 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "http://host.docker.internal:85/api/user-files/upload-file/",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "sendBody": true,
-        "contentType": "multipart-form-data",
-        "bodyParameters": {
+        "url": "={{ $json.response.generateVideoResponse.generatedSamples[0].video.uri }}",
+        "sendQuery": true,
+        "queryParameters": {
           "parameters": [
             {
-              "parameterType": "formBinaryData",
-              "name": "=file",
-              "inputDataFieldName": "data"
+              "name": "key",
+              "value": "AIzaSyDktTtX2nXl-QTBWuLmZho5fV3PzDS9d9A"
             }
           ]
         },
@@ -104,15 +92,69 @@
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [432, -528],
-      "id": "e7b950fb-a54f-4aee-a6fb-f55e1319fcb0",
-      "name": "output1",
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "c95uehxeKDKY8RwF",
-          "name": "Header Auth account 2"
-        }
-      }
+      "position": [
+        400,
+        -1424
+      ],
+      "id": "7314c355-3b8c-4301-baee-35094bbdf4a8",
+      "name": "download"
+    },
+    {
+      "parameters": {
+        "url": "=https://generativelanguage.googleapis.com/v1beta/{{ $json.name }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "AIzaSyDktTtX2nXl-QTBWuLmZho5fV3PzDS9d9A"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        560,
+        -1632
+      ],
+      "id": "6de1caba-6e36-4fcf-8b10-bd459605aab3",
+      "name": "HTTP Request4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b70186bb-adee-4b8b-9479-948e1f962da1",
+              "leftValue": "={{ $json.done }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        688,
+        -1632
+      ],
+      "id": "b0c61c1e-5612-4aac-a096-5f7ff78656dc",
+      "name": "If2"
     },
     {
       "parameters": {
@@ -127,7 +169,7 @@
             {
               "parameterType": "formBinaryData",
               "name": "file",
-              "inputDataFieldName": "=image0"
+              "inputDataFieldName": "data"
             }
           ]
         },
@@ -135,9 +177,12 @@
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [304, -816],
-      "id": "aa45bea0-629e-47fc-a611-6950b17da3a7",
-      "name": "input",
+      "position": [
+        544,
+        -1424
+      ],
+      "id": "846e44a6-1555-4a05-a687-c13a5cfcc4f2",
+      "name": "output2",
       "credentials": {
         "httpHeaderAuth": {
           "id": "c95uehxeKDKY8RwF",
@@ -146,22 +191,15 @@
       }
     },
     {
-      "parameters": {
-        "numberInputs": 3
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3,
-      "position": [544, -688],
-      "id": "06e85d6a-2897-4eaa-9388-77139560acfc",
-      "name": "Merge1"
-    },
-    {
       "parameters": {},
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
-      "position": [-336, -656],
-      "id": "af98ef1b-9944-4f23-a3ff-025ce4cc87f4",
-      "name": "Merge2"
+      "position": [
+        -352,
+        -1616
+      ],
+      "id": "d4667d48-48b2-46f1-b71c-a77d922d466b",
+      "name": "Merge4"
     },
     {
       "parameters": {
@@ -176,7 +214,7 @@
             {
               "id": "f46f3bcb-4c61-40ce-8e97-42a89a695963",
               "leftValue": "={{ $json.output }}",
-              "rightValue": "2-image",
+              "rightValue": "image-vid",
               "operator": {
                 "type": "string",
                 "operation": "contains"
@@ -191,16 +229,6 @@
                 "operation": "exists",
                 "singleValue": true
               }
-            },
-            {
-              "id": "2966604d-a71b-4d27-8dc2-41bc94bc88d6",
-              "leftValue": "={{ $json.image1 }}",
-              "rightValue": "",
-              "operator": {
-                "type": "string",
-                "operation": "exists",
-                "singleValue": true
-              }
             }
           ],
           "combinator": "and"
@@ -209,9 +237,12 @@
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [-16, -656],
-      "id": "877bdbf6-5035-41c9-924d-79eead5ea02e",
-      "name": "If"
+      "position": [
+        -32,
+        -1616
+      ],
+      "id": "b5ae7a76-31be-4243-a134-bb1bf23e2ded",
+      "name": "If3"
     },
     {
       "parameters": {
@@ -219,225 +250,160 @@
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [-176, -656],
-      "id": "af658970-00df-47de-abb5-973ef3b1e4e2",
-      "name": "Code in JavaScript1"
+      "position": [
+        -192,
+        -1616
+      ],
+      "id": "cfbb47e4-eeb7-4fd3-bff6-e5d74540b263",
+      "name": "Code in JavaScript3"
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent",
-        "sendHeaders": true,
-        "specifyHeaders": "json",
-        "jsonHeaders": "{\n  \"x-goog-api-key\": \"YOUR_GEMINI_API_KEY_HERE\",\n  \"Content-Type\": \"application/json\"\n}",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n  \"contents\": [{\n    \"parts\": [\n      {\n        \"inline_data\": {\n          \"mime_type\": \"image/png\",\n          \"data\": \"{{ $json.image0 }}\"\n        }\n      },\n      {\n        \"inline_data\": {\n          \"mime_type\": \"image/png\", \n          \"data\": \"{{ $json.image1 }}\"\n        }\n      },\n      {\n        \"text\": \"{{ $json.prompt }}\"\n      }\n    ]\n  }]\n}",
-        "options": {}
+        "jsCode": "// Get the first input item\nconst inputItem = $input.first();\n\n// Safely access binaries\nconst image0 = inputItem.binary?.image;\n\nreturn [\n  {\n    json: {\n      prompt: $input.first().json.body.prompt,\n      image0: image0 ? image0.data : null,\n      image0_mime: image0 ? image0.mimeType : null,\n    }\n  }\n];\n"
       },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [128, -528],
-      "id": "e77d2a4c-82ba-4f61-8fab-a2e6b1908835",
-      "name": "HTTP Request2"
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -544,
+        -1632
+      ],
+      "id": "3cb1b35f-09fa-484e-874a-7d6fe08e8692",
+      "name": "Code"
     },
     {
       "parameters": {
-        "operation": "toBinary",
-        "sourceProperty": "candidates[0].content.parts[0].inlineData.data",
-        "options": {}
+        "content": "## image to video\n",
+        "height": 400,
+        "width": 1424,
+        "color": 7
       },
-      "type": "n8n-nodes-base.convertToFile",
-      "typeVersion": 1.1,
-      "position": [288, -528],
-      "id": "1f5b1aa5-4717-49fd-aa09-7c972938d499",
-      "name": "Convert to File2"
-    },
-    {
-      "parameters": {
-        "operation": "toBinary",
-        "sourceProperty": "image0",
-        "binaryPropertyName": "image0",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.convertToFile",
-      "typeVersion": 1.1,
-      "position": [128, -816],
-      "id": "a3dd0dc6-071e-415e-9ebf-4bc8649f54db",
-      "name": "Convert to File"
-    },
-    {
-      "parameters": {
-        "operation": "toBinary",
-        "sourceProperty": "image1",
-        "binaryPropertyName": "image1",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.convertToFile",
-      "typeVersion": 1.1,
-      "position": [128, -672],
-      "id": "b84c3eca-a6bb-4756-9465-2ced754346ae",
-      "name": "Convert to File3"
-    },
-    {
-      "parameters": {
-        "workflow": "={\n  \"1\": {\n    \"inputs\": {\n      \"vae_name\": \"ae.safetensors\"\n    },\n    \"class_type\": \"VAELoader\",\n    \"_meta\": {\n      \"title\": \"Load VAE\"\n    }\n  },\n  \"2\": {\n    \"inputs\": {\n      \"clip_name1\": \"clip_l.safetensors\",\n      \"clip_name2\": \"t5xxl_fp8_e4m3fn_scaled.safetensors\",\n      \"type\": \"flux\",\n      \"device\": \"default\"\n    },\n    \"class_type\": \"DualCLIPLoader\",\n    \"_meta\": {\n      \"title\": \"DualCLIPLoader\"\n    }\n  },\n  \"3\": {\n    \"inputs\": {\n      \"conditioning\": [\n        \"25\",\n        0\n      ]\n    },\n    \"class_type\": \"ConditioningZeroOut\",\n    \"_meta\": {\n      \"title\": \"ConditioningZeroOut\"\n    }\n  },\n  \"7\": {\n    \"inputs\": {\n      \"samples\": [\n        \"20\",\n        0\n      ],\n      \"vae\": [\n        \"1\",\n        0\n      ]\n    },\n    \"class_type\": \"VAEDecode\",\n    \"_meta\": {\n      \"title\": \"VAE Decode\"\n    }\n  },\n  \"8\": {\n    \"inputs\": {\n      \"pixels\": [\n        \"9\",\n        0\n      ],\n      \"vae\": [\n        \"1\",\n        0\n      ]\n    },\n    \"class_type\": \"VAEEncode\",\n    \"_meta\": {\n      \"title\": \"VAE Encode\"\n    }\n  },\n  \"9\": {\n    \"inputs\": {\n      \"image\": [\n        \"11\",\n        0\n      ]\n    },\n    \"class_type\": \"FluxKontextImageScale\",\n    \"_meta\": {\n      \"title\": \"FluxKontextImageScale\"\n    }\n  },\n  \"11\": {\n    \"inputs\": {\n      \"direction\": \"right\",\n      \"match_image_size\": true,\n      \"spacing_width\": 0,\n      \"spacing_color\": \"white\",\n      \"image1\": [\n        \"29\",\n        0\n      ],\n      \"image2\": [\n        \"30\",\n        0\n      ]\n    },\n    \"class_type\": \"ImageStitch\",\n    \"_meta\": {\n      \"title\": \"Image Stitch\"\n    }\n  },\n  \"12\": {\n    \"inputs\": {\n      \"guidance\": 2.5,\n      \"conditioning\": [\n        \"17\",\n        0\n      ]\n    },\n    \"class_type\": \"FluxGuidance\",\n    \"_meta\": {\n      \"title\": \"FluxGuidance\"\n    }\n  },\n  \"17\": {\n    \"inputs\": {\n      \"conditioning\": [\n        \"25\",\n        0\n      ],\n      \"latent\": [\n        \"8\",\n        0\n      ]\n    },\n    \"class_type\": \"ReferenceLatent\",\n    \"_meta\": {\n      \"title\": \"ReferenceLatent\"\n    }\n  },\n  \"20\": {\n    \"inputs\": {\n      \"seed\": 173771080097307,\n      \"steps\": 20,\n      \"cfg\": 1,\n      \"sampler_name\": \"euler\",\n      \"scheduler\": \"simple\",\n      \"denoise\": 1,\n      \"model\": [\n        \"22\",\n        0\n      ],\n      \"positive\": [\n        \"12\",\n        0\n      ],\n      \"negative\": [\n        \"3\",\n        0\n      ],\n      \"latent_image\": [\n        \"28\",\n        0\n      ]\n    },\n    \"class_type\": \"KSampler\",\n    \"_meta\": {\n      \"title\": \"KSampler\"\n    }\n  },\n  \"22\": {\n    \"inputs\": {\n      \"model_path\": \"NUNCHAKU\\\\\\\\svdq-int4_r32-flux.1-kontext-dev.safetensors\",\n      \"cache_threshold\": 0,\n      \"attention\": \"nunchaku-fp16\",\n      \"cpu_offload\": \"auto\",\n      \"device_id\": 0,\n      \"data_type\": \"bfloat16\",\n      \"i2f_mode\": \"enabled\"\n    },\n    \"class_type\": \"NunchakuFluxDiTLoader\",\n    \"_meta\": {\n      \"title\": \"Nunchaku FLUX DiT Loader\"\n    }\n  },\n  \"25\": {\n    \"inputs\": {\n      \"text\": \"{{ $json.body.prompt }}\",\n      \"clip\": [\n        \"2\",\n        0\n      ]\n    },\n    \"class_type\": \"CLIPTextEncode\",\n    \"_meta\": {\n      \"title\": \"CLIP Text Encode (Positive Prompt)\"\n    }\n  },\n  \"27\": {\n    \"inputs\": {\n      \"images\": [\n        \"7\",\n        0\n      ]\n    },\n    \"class_type\": \"PreviewImage\",\n    \"_meta\": {\n      \"title\": \"Preview Image\"\n    }\n  },\n  \"28\": {\n    \"inputs\": {\n      \"width\": 1024,\n      \"height\": 1024,\n      \"batch_size\": 1\n    },\n    \"class_type\": \"EmptyLatentImage\",\n    \"_meta\": {\n      \"title\": \"Empty Latent Image\"\n    }\n  },\n  \"29\": {\n    \"inputs\": {\n      \"image\": \"{{ $json.image0_base64 }}\"\n    },\n    \"class_type\": \"ETN_LoadImageBase64\",\n    \"_meta\": {\n      \"title\": \"Load Image (Base64)\"\n    }\n  },\n  \"30\": {\n    \"inputs\": {\n      \"image\": \"{{ $json.image1_base64 }}\"\n    },\n    \"class_type\": \"ETN_LoadImageBase64\",\n    \"_meta\": {\n      \"title\": \"Load Image (Base64)\"\n    }\n  }\n}"
-      },
-      "type": "n8n-nodes-comfyui.comfyui",
+      "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
-      "position": [-176, -512],
-      "id": "fd20ef87-768d-49d3-acbd-406f7152b6d1",
-      "name": "output_2_img1",
-      "credentials": {
-        "comfyUIApi": {
-          "id": "CAJt4x1IjZkniKx3",
-          "name": "ComfyUI account"
-        }
-      },
-      "disabled": true
+      "position": [
+        -560,
+        -1680
+      ],
+      "id": "e4db0e62-f12d-4dbb-8661-0ca51dc0df47",
+      "name": "Sticky Note3"
     }
   ],
   "connections": {
-    "Code3": {
+    "HTTP Request": {
       "main": [
         [
           {
-            "node": "Merge2",
+            "node": "Wait",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "input2": {
+    "Wait": {
       "main": [
         [
           {
-            "node": "Merge1",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Baserow1": {
-      "main": [[]]
-    },
-    "output1": {
-      "main": [
-        [
-          {
-            "node": "Merge1",
-            "type": "main",
-            "index": 2
-          }
-        ]
-      ]
-    },
-    "input": {
-      "main": [
-        [
-          {
-            "node": "Merge1",
+            "node": "HTTP Request4",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Merge1": {
+    "Create a row1": {
+      "main": [
+        []
+      ]
+    },
+    "download": {
       "main": [
         [
           {
-            "node": "Baserow1",
+            "node": "output2",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Merge2": {
+    "HTTP Request4": {
       "main": [
         [
           {
-            "node": "Code in JavaScript1",
+            "node": "If2",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "If": {
+    "If2": {
       "main": [
         [
           {
-            "node": "HTTP Request2",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Convert to File",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Convert to File3",
+            "node": "download",
             "type": "main",
             "index": 0
           }
         ],
-        []
-      ]
-    },
-    "Code in JavaScript1": {
-      "main": [
         [
           {
-            "node": "If",
+            "node": "Wait",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "HTTP Request2": {
+    "output2": {
       "main": [
         [
           {
-            "node": "Convert to File2",
+            "node": "Create a row1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Convert to File2": {
+    "Merge4": {
       "main": [
         [
           {
-            "node": "output1",
+            "node": "Code in JavaScript3",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Convert to File": {
+    "If3": {
       "main": [
         [
           {
-            "node": "input",
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Convert to File3": {
+    "Code in JavaScript3": {
       "main": [
         [
           {
-            "node": "input2",
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
             "type": "main",
             "index": 0
           }

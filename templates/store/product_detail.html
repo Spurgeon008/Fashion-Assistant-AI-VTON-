@@ -112,6 +112,15 @@
                     {% endif %}
                 </div>
                 
+                <!-- Add to Wardrobe Button -->
+                {% if user.is_authenticated and single_product.stock > 0 %}
+                <div class="mt-3">
+                    <button type="button" class="btn btn-outline-success btn-block" data-toggle="modal" data-target="#wardrobeModal">
+                        <i class="fas fa-tshirt mr-2"></i> Add to My Wardrobe
+                    </button>
+                </div>
+                {% endif %}
+                
                 <!-- Product Features -->
                 <div class="mt-4">
                     <ul class="list-unstyled">
@@ -538,6 +547,62 @@
         </div>
     </div>
     
+    <!-- Add to Wardrobe Modal -->
+    <div class="modal fade" id="wardrobeModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-tshirt mr-2"></i> Add to My Wardrobe
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <form method="POST" action="{% url 'add_to_wardrobe' single_product.id %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <p class="text-muted">Add this item to your digital wardrobe to track your purchases and outfits.</p>
+                        
+                        {% if variations.color %}
+                        <div class="form-group">
+                            <label for="wardrobe-color">Color</label>
+                            <select name="color" id="wardrobe-color" class="form-control">
+                                <option value="">Select color</option>
+                                {% for variation in variations.color %}
+                                    <option value="{{ variation.variation_value | lower }}">{{ variation.variation_value | capfirst }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+                        
+                        {% if variations.size %}
+                        <div class="form-group">
+                            <label for="wardrobe-size">Size</label>
+                            <select name="size" id="wardrobe-size" class="form-control">
+                                <option value="">Select size</option>
+                                {% for variation in variations.size %}
+                                    <option value="{{ variation.variation_value | lower }}">{{ variation.variation_value | upper }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="form-group">
+                            <label for="wardrobe-notes">Notes (Optional)</label>
+                            <textarea name="notes" id="wardrobe-notes" class="form-control" rows="3" placeholder="Add any notes about this item..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-plus mr-2"></i> Add to Wardrobe
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     
     </div> <!-- container .//  -->
     </section>

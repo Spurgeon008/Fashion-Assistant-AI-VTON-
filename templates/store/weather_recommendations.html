@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="section-content padding-y bg">
+    <div class="container">
+        
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <div class="card-body text-center py-5">
+                        <h1 class="mb-3">
+                            <i class="fas fa-cloud-sun fa-2x mb-3"></i><br>
+                            Weather-Based Style Recommendations
+                        </h1>
+                        <p class="lead mb-4">Dress perfectly for today's weather!</p>
+                        
+                        <!-- City Search -->
+                        <form method="GET" class="form-inline justify-content-center">
+                            <div class="input-group" style="max-width: 500px; width: 100%;">
+                                <input type="text" name="city" class="form-control" placeholder="Enter your city" value="{{ city }}" style="border-radius: 25px 0 0 25px; height: 50px; font-size: 16px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.9);">
+                                <div class="input-group-append">
+                                    <button class="btn btn-light" type="submit" style="border-radius: 0 25px 25px 0; height: 50px; padding: 0 30px; font-weight: 600; border: 2px solid rgba(255,255,255,0.3); border-left: none;">
+                                        <i class="fas fa-search"></i> Check Weather
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weather Info -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-3 text-center">
+                                <img src="http://openweathermap.org/img/wn/{{ weather.icon }}@4x.png" alt="Weather" style="width: 120px;">
+                            </div>
+                            <div class="col-md-6">
+                                <h2 class="mb-2">{{ city }}</h2>
+                                <h1 class="display-3 mb-0">{{ weather.temp|floatformat:0 }}°C</h1>
+                                <p class="text-muted text-capitalize mb-0">{{ weather.description }}</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="weather-details">
+                                    <p class="mb-2">
+                                        <i class="fas fa-tint text-primary"></i> 
+                                        Humidity: {{ weather.humidity|default:"N/A" }}%
+                                    </p>
+                                    <p class="mb-0">
+                                        <i class="fas fa-wind text-primary"></i> 
+                                        Wind: {{ weather.wind_speed|default:"N/A" }} m/s
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="mb-3">
+                            <i class="fas fa-lightbulb text-warning mr-2"></i>
+                            {{ recommendations.message }}
+                        </h3>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5 class="mb-3">Style Tips:</h5>
+                                <ul class="list-unstyled">
+                                    {% for tip in recommendations.style_tips %}
+                                    <li class="mb-2">
+                                        <i class="fas fa-check-circle text-success mr-2"></i>
+                                        {{ tip }}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                <h5 class="mb-3">Recommended Categories:</h5>
+                                <div class="d-flex flex-wrap">
+                                    {% for category in recommendations.categories %}
+                                    <span class="badge badge-primary badge-lg mr-2 mb-2" style="font-size: 14px; padding: 8px 15px;">
+                                        {{ category|title }}
+                                    </span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommended Products -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3 class="mb-4">
+                    <i class="fas fa-shopping-bag mr-2"></i>
+                    Perfect Products for This Weather
+                </h3>
+            </div>
+        </div>
+
+        {% if products %}
+        <div class="row">
+            {% for product in products %}
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="card card-product-grid h-100">
+                    <a href="{% url 'product_detail' product.category.slug product.slug %}" class="img-wrap">
+                        <img src="{{ product.images.url }}" alt="{{ product.product_name }}">
+                    </a>
+                    <div class="card-body">
+                        <a href="{% url 'product_detail' product.category.slug product.slug %}" class="title">
+                            {{ product.product_name }}
+                        </a>
+                        <div class="price mt-2">
+                            <span class="h5">${{ product.price }}</span>
+                        </div>
+                        <div class="mt-3">
+                            <a href="{% url 'product_detail' product.category.slug product.slug %}" class="btn btn-primary btn-block">
+                                <i class="fas fa-eye mr-2"></i> View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-12">
+                <div class="card text-center py-5">
+                    <div class="card-body">
+                        <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+                        <h4>No products found for these weather conditions</h4>
+                        <p class="text-muted">Try browsing our full catalog</p>
+                        <a href="{% url 'store' %}" class="btn btn-primary mt-3">
+                            <i class="fas fa-store mr-2"></i> Browse All Products
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+<style>
+.weather-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+    padding: 30px;
+}
+
+.badge-lg {
+    font-size: 14px;
+    padding: 8px 15px;
+}
+
+.card-product-grid {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card-product-grid:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+</style>
+
+{% endblock %}

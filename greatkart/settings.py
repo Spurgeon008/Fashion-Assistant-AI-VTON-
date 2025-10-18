@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'store',
     'carts',
     'virtual_tryon',
+    'wardrobe',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -86,22 +87,19 @@ AUTH_USER_MODEL = 'accounts.Account'
 # Database Engine Configuration
 DB_ENGINE = config('DB_ENGINE', default='sqlite')
 
-if DB_ENGINE == 'mysql':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': config('DB_NAME'),
-            'USER': config('DB_USER'),
-            'PASSWORD': config('DB_PASSWORD'),
-            'HOST': config('DB_HOST', default='localhost'),
-            'PORT': config('DB_PORT', default='3306'),
-            'OPTIONS': {
-                'charset': 'utf8mb4',
-                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            },
-        }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'VTON',
+        'USER': 'VTONADMIN',
+        'PASSWORD': 'THISISVTON08',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
-else:
+}
+'''
+else
     # Default to SQLite
     DATABASES = {
         'default': {
@@ -109,7 +107,7 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-
+'''
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -140,7 +138,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_L10N = True
-
+ 
 USE_TZ = True
 
 
@@ -159,9 +157,15 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Google Generative AI API Key
+# Google Generative AI API Key
 # Get your key from: https://aistudio.google.com/app/apikey
 # Stored in .env file for security
 GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
+
+# OpenWeather API Key (optional - for weather-based recommendations)
+# Get your key from: https://openweathermap.org/api
+# If not set, will use default weather data
+OPENWEATHER_API_KEY = config('OPENWEATHER_API_KEY', default='')
 
 # n8n Webhook Configuration for Video VTON
 # Stored in .env file for security

@@ -486,8 +486,8 @@ $(document).ready(function() {
         
         // Show loading state
         var submitBtn = $(this).find('button[type="submit"]');
-        var originalText = submitBtn.html();
-        submitBtn.html('<i class="fas fa-spinner fa-spin mr-2"></i> Generating... (this may take 10-30 seconds)').prop('disabled', true);
+        var originalText = 'Generate Try-On (Image)';
+        submitBtn.html('<i class="fas fa-spinner fa-spin mr-2"></i> Generating...').prop('disabled', true);
         
         // Hide previous result
         $('#image-vton-result').hide();
@@ -501,6 +501,9 @@ $(document).ready(function() {
             contentType: false,
             timeout: 60000, // 60 second timeout
             success: function(response) {
+                // Restore button first
+                submitBtn.html(originalText).prop('disabled', false);
+                
                 if (response.success && response.image_data) {
                     // Display the generated image
                     $('#image-vton-output').attr('src', 'data:image/jpeg;base64,' + response.image_data);
@@ -516,6 +519,9 @@ $(document).ready(function() {
                 }
             },
             error: function(xhr, status, error) {
+                // Restore button
+                submitBtn.html(originalText).prop('disabled', false);
+                
                 var errorMessage = 'Failed to generate try-on';
                 if (xhr.responseJSON && xhr.responseJSON.error) {
                     errorMessage = xhr.responseJSON.error;
@@ -524,10 +530,6 @@ $(document).ready(function() {
                 }
                 showNotification(errorMessage, 'error');
                 console.error('VTON Error:', xhr.responseText);
-            },
-            complete: function() {
-                // Restore button
-                submitBtn.html(originalText).prop('disabled', false);
             }
         });
     });

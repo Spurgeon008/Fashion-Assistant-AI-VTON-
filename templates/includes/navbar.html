@@ -74,13 +74,29 @@
                     </a>
                 </div>
                 
+                <!-- Weather-Dress Link -->
+                <div class="col-lg-auto d-none d-lg-block">
+                    <a href="{% url 'weather_recommendations' %}" class="btn btn-outline-info">
+                        <i class="fas fa-cloud-sun mr-2"></i> Weather-Dress
+                    </a>
+                </div>
+                
+                <!-- Wardrobe Link -->
+                {% if user.is_authenticated %}
+                <div class="col-lg-auto d-none d-lg-block">
+                    <a href="{% url 'wardrobe' %}" class="btn btn-outline-success">
+                        <i class="fas fa-tshirt mr-2"></i> My Wardrobe
+                    </a>
+                </div>
+                {% endif %}
+                
                 <!-- Search Bar -->
                 <div class="col-lg col-md-6 col-sm-12 col-12 mt-3 mt-md-0">
                     <form action="{% url 'search' %}" class="search" method="GET">
-                        <div class="input-group w-100">
-                            <input type="text" class="form-control" placeholder="Search for products..." name="keyword" value="{{ request.GET.keyword }}">
+                        <div class="input-group w-100" style="max-width: 600px; margin: 0 auto;">
+                            <input type="text" class="form-control" placeholder="Search for products..." name="keyword" value="{{ request.GET.keyword }}" style="border-radius: 25px 0 0 25px; border: 2px solid #007bff; padding: 10px 20px; font-size: 14px;">
                             <div class="input-group-append">
-                                <button class="btn btn-primary" type="submit">
+                                <button class="btn btn-primary" type="submit" style="border-radius: 0 25px 25px 0; padding: 10px 25px; border: 2px solid #007bff; border-left: none;">
                                     <i class="fas fa-search"></i>
                                 </button>
                             </div>

@@ -80,7 +80,7 @@ def remix_images(image_paths, prompt):
     """
     # Get API key from settings
     api_key = getattr(settings, 'GEMINI_API_KEY', None)
-    if not api_key:
+    if not api_key or not api_key.strip():
         raise ValueError("GEMINI_API_KEY not set in Django settings")
     
     client = genai.Client(api_key=api_key)

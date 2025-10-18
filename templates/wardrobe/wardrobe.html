@@ -1,0 +1,389 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="section-content padding-y bg">
+    <div class="container">
+        
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h2 class="mb-2">
+                                    <i class="fas fa-tshirt mr-2 text-primary"></i> My Digital Wardrobe
+                                </h2>
+                                <p class="text-muted mb-0">Manage your purchased clothing items</p>
+                            </div>
+                            <div class="col-md-4 text-md-right">
+                                <div class="wardrobe-stats">
+                                    <span class="badge badge-primary badge-lg mr-2">
+                                        <i class="fas fa-shopping-bag"></i> {{ total_items }} Items
+                                    </span>
+                                    <span class="badge badge-danger badge-lg">
+                                        <i class="fas fa-heart"></i> {{ favorites }} Favorites
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <ul class="nav nav-pills" id="wardrobeFilter">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" data-filter="all">All Items</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-filter="favorites">Favorites</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-filter="recent">Recently Added</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Wardrobe Items -->
+        {% if wardrobe_items %}
+        <div class="row" id="wardrobeItems">
+            {% for item in wardrobe_items %}
+            <div class="col-md-6 col-lg-4 mb-4 wardrobe-item" data-favorite="{{ item.favorite|lower }}" data-date="{{ item.purchase_date|date:'Y-m-d' }}">
+                <div class="card h-100 wardrobe-card">
+                    <!-- Product Image -->
+                    <div class="wardrobe-img-wrap">
+                        <img src="{{ item.product.images.url }}" class="card-img-top" alt="{{ item.product.product_name }}">
+                        <button class="favorite-btn {% if item.favorite %}active{% endif %}" 
+                                data-item-id="{{ item.id }}"
+                                title="{% if item.favorite %}Remove from favorites{% else %}Add to favorites{% endif %}">
+                            <i class="{% if item.favorite %}fas{% else %}far{% endif %} fa-heart"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="card-body">
+                        <!-- Product Name -->
+                        <h5 class="card-title">{{ item.product.product_name }}</h5>
+                        
+                        <!-- Details -->
+                        <div class="wardrobe-details mb-3">
+                            {% if item.color %}
+                            <span class="badge badge-secondary">
+                                <i class="fas fa-palette"></i> {{ item.color|capfirst }}
+                            </span>
+                            {% endif %}
+                            {% if item.size %}
+                            <span class="badge badge-secondary">
+                                <i class="fas fa-ruler"></i> {{ item.size|upper }}
+                            </span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Stats -->
+                        <div class="wardrobe-stats-row mb-3">
+                            <div class="stat-item">
+                                <i class="fas fa-calendar-alt text-muted"></i>
+                                <small class="text-muted">Added {{ item.purchase_date|date:"M d, Y" }}</small>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-eye text-muted"></i>
+                                <small class="text-muted">Worn <span class="times-worn-count">{{ item.times_worn }}</span> times</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Notes -->
+                        <div class="wardrobe-notes mb-3">
+                            <textarea class="form-control form-control-sm item-notes" 
+                                      data-item-id="{{ item.id }}"
+                                      placeholder="Add notes about this item..."
+                                      rows="2">{{ item.notes }}</textarea>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="wardrobe-actions">
+                            <button class="btn btn-sm btn-outline-primary worn-btn" data-item-id="{{ item.id }}">
+                                <i class="fas fa-plus"></i> Worn Today
+                            </button>
+                            <a href="{% url 'product_detail' item.product.category.slug item.product.slug %}" class="btn btn-sm btn-outline-info">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            <button class="btn btn-sm btn-outline-danger remove-btn" data-item-id="{{ item.id }}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card text-center py-5">
+                    <div class="card-body">
+                        <i class="fas fa-tshirt fa-5x text-muted mb-4"></i>
+                        <h3>Your Wardrobe is Empty</h3>
+                        <p class="text-muted mb-4">Start adding items from your purchases to build your digital wardrobe!</p>
+                        <a href="{% url 'store' %}" class="btn btn-primary">
+                            <i class="fas fa-shopping-bag mr-2"></i> Browse Products
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+<!-- Remove Confirmation Modal -->
+<div class="modal fade" id="removeModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Remove Item</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to remove this item from your wardrobe?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <form id="removeForm" method="POST" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Remove</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.wardrobe-card {
+    transition: transform 0.2s;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.wardrobe-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.wardrobe-img-wrap {
+    position: relative;
+    overflow: hidden;
+    height: 250px;
+}
+
+.wardrobe-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.favorite-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: all 0.2s;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.1);
+}
+
+.favorite-btn i {
+    font-size: 18px;
+    color: #dc3545;
+}
+
+.favorite-btn.active i {
+    color: #dc3545;
+}
+
+.wardrobe-details {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.wardrobe-stats-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.wardrobe-notes textarea {
+    resize: none;
+    font-size: 13px;
+}
+
+.wardrobe-actions {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.wardrobe-actions .btn {
+    flex: 1;
+    min-width: 80px;
+}
+
+.wardrobe-stats .badge-lg {
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+#wardrobeFilter .nav-link {
+    color: #666;
+    border-radius: 20px;
+    padding: 8px 20px;
+    margin-right: 10px;
+}
+
+#wardrobeFilter .nav-link.active {
+    background-color: #007bff;
+    color: white;
+}
+
+#wardrobeFilter .nav-link:hover {
+    background-color: #e9ecef;
+}
+
+#wardrobeFilter .nav-link.active:hover {
+    background-color: #0056b3;
+}
+</style>
+
+<script>
+$(document).ready(function() {
+    // Toggle Favorite
+    $('.favorite-btn').on('click', function() {
+        var btn = $(this);
+        var itemId = btn.data('item-id');
+        
+        $.ajax({
+            url: '/wardrobe/toggle-favorite/' + itemId + '/',
+            type: 'POST',
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    btn.toggleClass('active');
+                    var icon = btn.find('i');
+                    if (response.favorite) {
+                        icon.removeClass('far').addClass('fas');
+                        showNotification('Added to favorites!', 'success');
+                    } else {
+                        icon.removeClass('fas').addClass('far');
+                        showNotification('Removed from favorites', 'success');
+                    }
+                }
+            }
+        });
+    });
+    
+    // Update Times Worn
+    $('.worn-btn').on('click', function() {
+        var btn = $(this);
+        var itemId = btn.data('item-id');
+        var card = btn.closest('.wardrobe-card');
+        
+        $.ajax({
+            url: '/wardrobe/update-worn/' + itemId + '/',
+            type: 'POST',
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    card.find('.times-worn-count').text(response.times_worn);
+                    showNotification('Marked as worn today!', 'success');
+                }
+            }
+        });
+    });
+    
+    // Update Notes (debounced)
+    var notesTimeout;
+    $('.item-notes').on('input', function() {
+        var textarea = $(this);
+        var itemId = textarea.data('item-id');
+        var notes = textarea.val();
+        
+        clearTimeout(notesTimeout);
+        notesTimeout = setTimeout(function() {
+            $.ajax({
+                url: '/wardrobe/update-notes/' + itemId + '/',
+                type: 'POST',
+                data: {
+                    notes: notes,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        showNotification('Notes saved', 'success');
+                    }
+                }
+            });
+        }, 1000);
+    });
+    
+    // Remove Item
+    var itemToRemove;
+    $('.remove-btn').on('click', function() {
+        itemToRemove = $(this).data('item-id');
+        $('#removeForm').attr('action', '/wardrobe/remove/' + itemToRemove + '/');
+        $('#removeModal').modal('show');
+    });
+    
+    // Filter Items
+    $('#wardrobeFilter .nav-link').on('click', function(e) {
+        e.preventDefault();
+        $('#wardrobeFilter .nav-link').removeClass('active');
+        $(this).addClass('active');
+        
+        var filter = $(this).data('filter');
+        var items = $('.wardrobe-item');
+        
+        if (filter === 'all') {
+            items.show();
+        } else if (filter === 'favorites') {
+            items.hide();
+            items.filter('[data-favorite="true"]').show();
+        } else if (filter === 'recent') {
+            items.show();
+            // Sort by date (already sorted by default)
+        }
+    });
+});
+</script>
+
+{% endblock %}
